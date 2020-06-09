@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -42,7 +43,4 @@ public class CommentEntity {
     @Column(name="created_at")
     private Date createdAt;
 
-    public CommentEntity getCommentEntity() {
-        return this;
-    }
 }

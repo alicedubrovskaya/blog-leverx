@@ -2,15 +2,29 @@ package com.leverxblog.converters;
 
 import com.leverxblog.dto.ArticleDto;
 import com.leverxblog.dto.StatusDto;
+import com.leverxblog.dto.TagDto;
 import com.leverxblog.dto.UserDto;
 import com.leverxblog.entity.*;
 import com.leverxblog.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class ArticleConverter {
     public ArticleDto convert(ArticleEntity articleEntity){
-        return ArticleDto.builder()
+        List<TagDto> tagDtos=new ArrayList<>();
+        articleEntity.getTags().forEach(
+                tagEntity -> tagDtos.add(
+                       TagDto.builder()
+                               .id(tagEntity.getId())
+                               .name(tagEntity.getName())
+                               .build()
+                )
+        );
+        ArticleDto articleDto= ArticleDto.builder()
                 .id(articleEntity.getId())
                 .title(articleEntity.getTitle())
                 .text(articleEntity.getText())
@@ -18,6 +32,7 @@ public class ArticleConverter {
                 .updatedAt(articleEntity.getUpdatedAt())
                 .userEntity_id(articleEntity.getUserEntity().getId())
                 .status(StatusDto.valueOf(articleEntity.getStatus().name()))
+          //      .tags(tagDtos)
                 .userDto(
                         UserDto.builder()
                         .id(articleEntity.getUserEntity().getId())
@@ -31,9 +46,22 @@ public class ArticleConverter {
                         .build()
                 )
                 .build();
+        articleDto.setTags(tagDtos);
+        return articleDto;
     }
 
     public ArticleEntity convert(ArticleDto articleDto){
+        List<TagEntity> tagEntities=new ArrayList<>();
+        articleDto.getTags().forEach(
+                tagDto->{
+                    tagEntities.add(TagEntity.builder()
+                            .id(tagDto.getId())
+                            .name(tagDto.getName())
+                            .build()
+                    );
+                }
+        );
+
         ArticleEntity articleEntity=ArticleEntity.builder()
                 .id(articleDto.getId())
                 .title(articleDto.getTitle())
@@ -46,8 +74,9 @@ public class ArticleConverter {
                             .id(articleDto.getUserEntity_id())
                             .build()
                 )
+           //     .tags(tagEntities)
                 .build();
-
+        articleEntity.setTags(tagEntities);
         return articleEntity;
     }
 }

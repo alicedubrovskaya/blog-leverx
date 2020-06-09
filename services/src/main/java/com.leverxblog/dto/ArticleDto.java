@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -23,6 +25,7 @@ public class ArticleDto {
     private Date updatedAt;
     private UserDto userDto;
     private StatusDto status;
+    private List<TagDto> tags=new ArrayList<>();
 
     @JsonIgnore
     public ArticleDto getArticle() {

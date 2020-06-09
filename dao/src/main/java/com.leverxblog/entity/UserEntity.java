@@ -50,12 +50,4 @@ public class UserEntity {
     @Column(name = "created_at")
     private Date createdAt;
 
-    public UserEntity getUserEntity() {
-        return this;
-    }
-
-    public void addArticle(ArticleEntity articleEntity) {
-        this.articles.add(articleEntity);
-        articleEntity.setUserEntity(this);
-    }
 }

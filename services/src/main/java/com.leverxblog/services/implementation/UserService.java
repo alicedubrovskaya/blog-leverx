@@ -51,7 +51,7 @@ public class UserService implements CrudService<UserDto> {
     }
 
     public String register(UserRegisterDto userRegisterDto) {
-        if (userRepository.existsByLogin(userRegisterDto.getLogin())) { //как реализован интерфейс??
+        if (userRepository.existsByLogin(userRegisterDto.getLogin())) {
             return null;
         }
         userRegisterDto.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));

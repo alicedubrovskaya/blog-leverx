@@ -8,7 +8,6 @@ import com.leverxblog.services.implementation.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,13 +23,14 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @PostMapping(path = "/add")
+    @PostMapping
     public ResponseEntity<Object> addNewArticle(@RequestBody ArticleDto articleDto) {
         Map id = Collections.singletonMap("id", articleService.add(articleDto));
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/get")
+
+    @GetMapping
     public ResponseEntity<List<ArticleDto>> getAll() {
         List<ArticleDto> articles = articleService.getAll();
         if (CollectionUtils.isEmpty(articles)) {
@@ -45,14 +45,18 @@ public class ArticleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //добавить потом проверку на создателя поста
-    //все поля перезаписываются
-    @PutMapping(path = "/update")
-    public ResponseEntity<Object> update(@RequestBody ArticleDto articleDto) throws Exception {
+    @PutMapping(path = "/{userId}")
+    public ResponseEntity<Object> update(@PathVariable UUID userId, @RequestBody ArticleDto articleDto) throws Exception {
+
         ArticleDto articleDto1 = articleService.getById(articleDto.getId());
         if (articleDto1 == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        //!!!UUID comparison
+      //  if (articleDto1.getUserEntity_id()!=userId){
+        //    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        //}
         ArticleDto articleDto2 = ArticleDto.builder()
                 .id(articleDto.getId())
                 .title(articleDto.getTitle())
@@ -60,10 +64,10 @@ public class ArticleController {
                 .status(StatusDto.valueOf(articleDto.getStatus().name()))
                 .createdAt(articleDto.getCreatedAt())
                 .updatedAt(articleDto.getUpdatedAt())
-                .userEntity_id(articleDto1.getUserEntity_id())
+                .userEntity_id(userId)
                 .userDto(
                         UserDto.builder()
-                                .id(articleDto1.getUserEntity_id())
+                                .id(userId)
                                 .firstName(articleDto1.getUserDto().getFirstName())
                                 .lastName(articleDto1.getUserDto().getLastName())
                                 .password(articleDto1.getUserDto().getPassword())

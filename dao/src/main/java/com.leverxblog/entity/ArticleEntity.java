@@ -50,8 +50,11 @@ public class ArticleEntity {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "articles_tags",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<TagEntity> tags;
 
-    ArticleEntity getArticleEntity() {
-        return this;
-    }
 }

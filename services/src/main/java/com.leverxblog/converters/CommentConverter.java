@@ -15,6 +15,8 @@ public class CommentConverter {
                 .id(commentEntity.getId())
                 .message(commentEntity.getMessage())
                 .createdAt(commentEntity.getCreatedAt())
+                .userId(commentEntity.getUserEntity().getId())
+                .articleId(commentEntity.getArticleEntity().getId())
                 .userDto(UserDto.builder()
                         .id(commentEntity.getUserEntity().getId())
                         .firstName(commentEntity.getUserEntity().getFirstName())
