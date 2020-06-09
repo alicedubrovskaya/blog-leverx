@@ -20,7 +20,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
     private List<ArticleEntity> articles=new ArrayList<>();
 
-    @OneToMany(mappedBy = "commentEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<CommentEntity> comments=new ArrayList<>();
 
     @GeneratedValue(generator = "UUID")
