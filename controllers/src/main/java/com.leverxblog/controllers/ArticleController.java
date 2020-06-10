@@ -2,8 +2,10 @@ package com.leverxblog.controllers;
 
 import com.leverxblog.dto.ArticleDto;
 import com.leverxblog.dto.StatusDto;
+import com.leverxblog.dto.TagDto;
 import com.leverxblog.dto.UserDto;
 
+import com.leverxblog.entity.TagEntity;
 import com.leverxblog.services.implementation.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +32,7 @@ public class ArticleController {
     }
 
 
-    @GetMapping
+    @GetMapping(path="/public")
     public ResponseEntity<List<ArticleDto>> getAll() {
         List<ArticleDto> articles = articleService.getAll();
         if (CollectionUtils.isEmpty(articles)) {
@@ -57,6 +59,16 @@ public class ArticleController {
       //  if (articleDto1.getUserEntity_id()!=userId){
         //    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         //}
+        List<TagDto> tagDtos=new ArrayList<>();
+        articleDto.getTags().forEach(
+                tagDto->{
+                    tagDtos.add(TagDto.builder()
+                            .id(tagDto.getId())
+                            .name(tagDto.getName())
+                            .build()
+                    );
+                }
+        );
         ArticleDto articleDto2 = ArticleDto.builder()
                 .id(articleDto.getId())
                 .title(articleDto.getTitle())
@@ -74,6 +86,7 @@ public class ArticleController {
                                 .email(articleDto1.getUserDto().getEmail())
                                 .build()
                 )
+                .tags(tagDtos)
                 .build();
 
         String id = articleService.add(articleDto2);

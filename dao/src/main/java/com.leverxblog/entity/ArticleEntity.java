@@ -50,11 +50,10 @@ public class ArticleEntity {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "articles_tags",
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<TagEntity> tags;
-
 }

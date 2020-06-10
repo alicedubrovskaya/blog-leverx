@@ -51,7 +51,7 @@ public class ArticleConverter {
     }
 
     public ArticleEntity convert(ArticleDto articleDto){
-        List<TagEntity> tagEntities=new ArrayList<>();
+      List<TagEntity> tagEntities=new ArrayList<>();
         articleDto.getTags().forEach(
                 tagDto->{
                     tagEntities.add(TagEntity.builder()
@@ -61,6 +61,7 @@ public class ArticleConverter {
                     );
                 }
         );
+
 
         ArticleEntity articleEntity=ArticleEntity.builder()
                 .id(articleDto.getId())
@@ -74,9 +75,9 @@ public class ArticleConverter {
                             .id(articleDto.getUserEntity_id())
                             .build()
                 )
-           //     .tags(tagEntities)
-                .build();
-        articleEntity.setTags(tagEntities);
+               .tags(tagEntities)
+               .build();
+
         return articleEntity;
     }
 }
