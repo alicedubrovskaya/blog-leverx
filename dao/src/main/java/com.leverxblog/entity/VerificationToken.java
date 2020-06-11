@@ -23,17 +23,18 @@ public class VerificationToken {
     private Long id;
 
     private String token;
+    private Date expiryDate;
+
 
     public VerificationToken(String token, UserEntity userEntity) {
         this.token = token;
         this.userEntity = userEntity;
+        this.expiryDate=calculateExpiryDate(EXPIRATION);
     }
 
     @OneToOne //дописать
     @JoinColumn(nullable = false, name="userEntity_id")
     private UserEntity userEntity;
-
-    private Date expiryDate;
 
     private Date calculateExpiryDate(int expiryTimeInMinutes){
         Calendar calendar=Calendar.getInstance();

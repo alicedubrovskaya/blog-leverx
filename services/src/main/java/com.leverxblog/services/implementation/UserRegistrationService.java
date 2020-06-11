@@ -26,4 +26,14 @@ public class UserRegistrationService implements IUserService {
         VerificationToken myToken= new VerificationToken(token,userEntity);
         verificationTokenRepository.save(myToken);
     }
+
+    @Override
+    public void saveRegisteredUser(UserEntity user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public VerificationToken getVerificationToken(String verificationToken) {
+        return verificationTokenRepository.findByToken(verificationToken);
+    }
 }
