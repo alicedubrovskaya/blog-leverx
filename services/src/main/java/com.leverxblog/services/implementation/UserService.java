@@ -2,6 +2,7 @@ package com.leverxblog.services.implementation;
 
 import com.leverxblog.converters.UserConverter;
 import com.leverxblog.dto.UserRegisterDto;
+import com.leverxblog.entity.UserEntity;
 import com.leverxblog.repository.UserRepository;
 import com.leverxblog.dto.UserDto;
 import com.leverxblog.services.CrudService;
@@ -27,6 +28,8 @@ public class UserService implements CrudService<UserDto> {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
+
 
     @Override
     public String add(UserDto userDto) {
@@ -59,4 +62,12 @@ public class UserService implements CrudService<UserDto> {
         String id=add(userRegisterDto);
         return id;
     }
+
+    public UserEntity addToRegister(UserDto userDto) {
+        UserEntity userEntity=userConverter.convert(userDto);
+        userRepository.save(userEntity);
+        return userEntity;
+    }
+
 }
+

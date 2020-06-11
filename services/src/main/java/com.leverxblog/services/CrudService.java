@@ -11,4 +11,5 @@ public interface CrudService<T> {
     T getById(UUID id) throws Exception;
 
     void delete(UUID id);
+
 }

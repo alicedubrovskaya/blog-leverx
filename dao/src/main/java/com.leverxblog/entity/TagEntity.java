@@ -22,7 +22,7 @@ public class TagEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id", unique = true, nullable = false)
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     private String name;

@@ -23,6 +23,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<CommentEntity> comments=new ArrayList<>();
 
+    @OneToOne(mappedBy = "userEntity")
+    private VerificationToken verificationToken;
+
     @GeneratedValue(generator = "UUID")
     @Id
     @GenericGenerator(
@@ -43,6 +46,9 @@ public class UserEntity {
 
     @Column(name="login")
     private String login;
+
+    @Column(name="enabled")
+    private boolean enabled;
 
     @Column(unique = true, name = "email")
     private String email;

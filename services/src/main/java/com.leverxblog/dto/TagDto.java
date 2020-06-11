@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class TagDto {
-    private long id;
+    private Long id;
     private String name;
     private List<ArticleDto> articles=new ArrayList<>();
 
