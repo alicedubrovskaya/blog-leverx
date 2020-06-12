@@ -54,11 +54,10 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Authentication getAuthentification(String token){
+    public Authentication getAuthentication(String token){
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getLogin(token));
-        //!!!getAuthorities not realized
-    //   return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-        return new UsernamePasswordAuthenticationToken(userDetails,"");
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+       // return new UsernamePasswordAuthenticationToken(userDetails,"");
     }
 
     public String getLogin(String token){

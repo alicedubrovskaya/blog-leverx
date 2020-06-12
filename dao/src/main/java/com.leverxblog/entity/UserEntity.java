@@ -50,6 +50,10 @@ public class UserEntity {
     @Column(name = "created_at")
     private Date createdAt;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
     @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
     private List<ArticleEntity> articles=new ArrayList<>();
 

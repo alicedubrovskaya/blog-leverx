@@ -2,6 +2,7 @@ package com.leverxblog.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leverxblog.entity.ArticleEntity;
+import com.leverxblog.entity.Role;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class UserDto {
     private String login;
     private Date createdAt;
     private String email;
+    private Role role;
     private List<ArticleDto> articles=new ArrayList<>();
 
     @JsonIgnore

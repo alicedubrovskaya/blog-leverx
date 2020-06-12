@@ -32,7 +32,7 @@ public class VerificationToken {
         this.expiryDate=calculateExpiryDate(EXPIRATION);
     }
 
-    @OneToOne //дописать
+    @OneToOne
     @JoinColumn(nullable = false, name="userEntity_id")
     private UserEntity userEntity;
 

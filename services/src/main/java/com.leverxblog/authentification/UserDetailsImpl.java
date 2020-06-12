@@ -24,13 +24,12 @@ public class UserDetailsImpl implements UserDetails {
         this.user = user;
     }
 
-//I have no roles!!
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-       // String userRole = user.getRole().name();
-       // SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userRole);
-       // return Collections.singletonList(grantedAuthority);
-        return null;
+        String userRole = user.getRole().name();
+        SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userRole);
+        return Collections.singletonList(grantedAuthority);
     }
 
     @Override
