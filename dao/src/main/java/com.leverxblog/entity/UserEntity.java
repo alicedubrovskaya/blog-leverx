@@ -2,6 +2,8 @@ package com.leverxblog.entity;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,14 +19,6 @@ import java.util.UUID;
 @Builder
 @Table(name = "users")
 public class UserEntity {
-    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-    private List<ArticleEntity> articles=new ArrayList<>();
-
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
-    private List<CommentEntity> comments=new ArrayList<>();
-
-    @OneToOne(mappedBy = "userEntity")
-    private VerificationToken verificationToken;
 
     @GeneratedValue(generator = "UUID")
     @Id
@@ -55,5 +49,14 @@ public class UserEntity {
 
     @Column(name = "created_at")
     private Date createdAt;
+
+    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
+    private List<ArticleEntity> articles=new ArrayList<>();
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<CommentEntity> comments=new ArrayList<>();
+
+    @OneToOne(mappedBy = "userEntity")
+    private VerificationToken verificationToken;
 
 }

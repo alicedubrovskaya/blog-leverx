@@ -64,8 +64,5 @@ public class RegistrationController {
         userEntity.setEnabled(true);
         userRegistrationService.saveRegisteredUser(userEntity);
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
-
-
 }
