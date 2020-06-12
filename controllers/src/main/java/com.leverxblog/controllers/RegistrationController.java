@@ -10,14 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/register")
@@ -25,16 +23,19 @@ public class RegistrationController {
     private UserService userService;
     private UserRegistrationService userRegistrationService;
     private ApplicationEventPublisher eventPublisher;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public RegistrationController(UserService userService, UserRegistrationService userRegistrationService, ApplicationEventPublisher eventPublisher) {
+    public RegistrationController(UserService userService, UserRegistrationService userRegistrationService, ApplicationEventPublisher eventPublisher, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.userRegistrationService = userRegistrationService;
         this.eventPublisher = eventPublisher;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @PostMapping
     public ResponseEntity<Object> registerUser(@RequestBody UserRegisterDto userRegisterDto, WebRequest request) {
+        userRegisterDto.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
 
         UserEntity userEntity=userService.addToRegister(userRegisterDto);
         if (userEntity==null) {

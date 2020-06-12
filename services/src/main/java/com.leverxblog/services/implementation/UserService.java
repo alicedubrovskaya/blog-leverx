@@ -53,6 +53,10 @@ public class UserService implements CrudService<UserDto> {
         return null;
     }
 
+    public UserDto getByLogin(String login){
+        return userConverter.convert(userRepository.findByLogin(login));
+    }
+
     public String register(UserRegisterDto userRegisterDto) {
         if (userRepository.existsByLogin(userRegisterDto.getLogin())) {
             return null;

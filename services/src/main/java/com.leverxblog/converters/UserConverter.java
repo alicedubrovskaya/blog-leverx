@@ -33,6 +33,7 @@ public class UserConverter {
                 .email(userEntity.getEmail())
                 .createdAt(userEntity.getCreatedAt())
                 .articles(articleDtos)
+                .login(userEntity.getLogin())
                 .build();
     }
 
@@ -45,6 +46,7 @@ public class UserConverter {
                 .password(userDto.getPassword())
                 .email(userDto.getEmail())
                 .createdAt(userDto.getCreatedAt())
+                .login(userDto.getLogin())
                 .build();
     }
 
