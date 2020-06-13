@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 @RestController
@@ -63,6 +64,7 @@ public class RegistrationController {
         }
 
         userEntity.setEnabled(true);
+        userEntity.setCreatedAt(new Date(System.currentTimeMillis()));
         userRegistrationService.saveRegisteredUser(userEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }

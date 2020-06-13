@@ -19,8 +19,7 @@ public class TagDto {
     private String name;
     private List<ArticleDto> articles=new ArrayList<>();
 
-    @JsonIgnore
-    public TagDto getTagDto() {
-        return this;
+    public void addArticle(ArticleDto articleDto){
+        this.articles.add(articleDto);
     }
 }

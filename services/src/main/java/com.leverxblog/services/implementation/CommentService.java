@@ -9,6 +9,7 @@ import com.leverxblog.services.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class CommentService implements CrudService<CommentDto> {
 
     @Override
     public String add(CommentDto commentDto) {
+        commentDto.setCreatedAt(new Date(System.currentTimeMillis()));
         return String.valueOf(commentRepository.save(commentConverter.convert(commentDto)).getId());
     }
 

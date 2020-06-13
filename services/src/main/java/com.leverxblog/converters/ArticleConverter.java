@@ -51,32 +51,16 @@ public class ArticleConverter {
     }
 
     public ArticleEntity convert(ArticleDto articleDto){
+
       List<TagEntity> tagEntities=new ArrayList<>();
         for(TagDto tagDto: articleDto.getTags()){
-            if (tagDto.getId()==null){
                 tagEntities.add(TagEntity.builder()
+                        .id(tagDto.getId())
                         .name(tagDto.getName())
                         .build()
                 );
             }
-            else {
-                tagEntities.add(TagEntity.builder()
-                        .id(tagDto.getId())
-                        .build()
-                );
-            }
-        }
-     /*   articleDto.getTags().forEach(
-                tagDto->{
-                    tagEntities.add(TagEntity.builder()
-                            .id(tagDto.getId())
-                            .name(tagDto.getName())
-                            .build()
-                    );
-                }
-        );
 
-*/
         ArticleEntity articleEntity=ArticleEntity.builder()
                 .id(articleDto.getId())
                 .title(articleDto.getTitle())

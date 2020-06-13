@@ -33,4 +33,5 @@ public class TagEntity {
             inverseJoinColumns = @JoinColumn(name="article_id")
     )
     private List<ArticleEntity> articles;
+
 }

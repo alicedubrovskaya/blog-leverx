@@ -50,7 +50,7 @@ public class ArticleEntity {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @ManyToMany (cascade = {CascadeType.PERSIST, CascadeType.MERGE}) //(cascade =CascadeType.MERGE)//
+    @ManyToMany
     @JoinTable(name = "articles_tags",
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")

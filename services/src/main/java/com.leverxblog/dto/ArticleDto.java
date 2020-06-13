@@ -27,9 +27,5 @@ public class ArticleDto {
     private StatusDto status;
     private List<TagDto> tags=new ArrayList<>();
 
-    @JsonIgnore
-    public ArticleDto getArticle() {
-        return this;
-    }
 
 }

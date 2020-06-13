@@ -5,10 +5,11 @@ import com.leverxblog.dto.StatusDto;
 import com.leverxblog.dto.TagDto;
 import com.leverxblog.dto.UserDto;
 
-import com.leverxblog.entity.TagEntity;
 import com.leverxblog.services.implementation.ArticleService;
+import com.leverxblog.services.implementation.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -19,20 +20,24 @@ import java.util.*;
 @RequestMapping("/articles")
 public class ArticleController {
     private ArticleService articleService;
+    private UserService userService;
 
     @Autowired
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, UserService userService) {
         this.articleService = articleService;
+        this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<Object> addNewArticle(@RequestBody ArticleDto articleDto) {
-        Map id = Collections.singletonMap("id", articleService.add(articleDto));
+    public ResponseEntity<Object> addNewArticle(@RequestBody ArticleDto articleDto, Authentication authentication) {
+        String login= authentication.getName();
+        UUID userId = userService.getByLogin(login).getId();
+        Map id = Collections.singletonMap("id", articleService.add(articleDto, userId));
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
 
-    @GetMapping(path="/public")
+    @GetMapping(path="/all")
     public ResponseEntity<List<ArticleDto>> getAll() {
         List<ArticleDto> articles = articleService.getAll();
         if (CollectionUtils.isEmpty(articles)) {
@@ -41,24 +46,49 @@ public class ArticleController {
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/public")
+    public ResponseEntity<List<ArticleDto>> getPublicArticles() {
+        List<ArticleDto> articles = articleService.getByPublicStatus();
+        if (CollectionUtils.isEmpty(articles)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(articles, HttpStatus.OK);
+    }
+
+
+
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") UUID id){
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id, Authentication authentication) throws Exception{
+        ArticleDto articleDto = articleService.getById(id);
+        UserDto user = userService.getByLogin(authentication.getName());
+
+        if (articleDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if ((user.getId()).compareTo(articleDto.getUserEntity_id())!=0){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         articleService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/{userId}")
-    public ResponseEntity<Object> update(@PathVariable UUID userId, @RequestBody ArticleDto articleDto) throws Exception {
+    public ResponseEntity<Object> update(@PathVariable UUID userId, @RequestBody ArticleDto articleDto,
+                                         Authentication authentication) throws Exception {
 
-        ArticleDto articleDto1 = articleService.getById(articleDto.getId());
-        if (articleDto1 == null) {
+        ArticleDto articleFromDatabase = articleService.getById(articleDto.getId());
+        UserDto user = userService.getByLogin(authentication.getName());
+
+        if (articleFromDatabase == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        //!!!UUID comparison
-      //  if (articleDto1.getUserEntity_id()!=userId){
-        //    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        //}
+        if ((user.getId()).compareTo(articleDto.getUserEntity_id())!=0){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         List<TagDto> tagDtos=new ArrayList<>();
         articleDto.getTags().forEach(
                 tagDto->{
@@ -80,16 +110,16 @@ public class ArticleController {
                 .userDto(
                         UserDto.builder()
                                 .id(userId)
-                                .firstName(articleDto1.getUserDto().getFirstName())
-                                .lastName(articleDto1.getUserDto().getLastName())
-                                .password(articleDto1.getUserDto().getPassword())
-                                .email(articleDto1.getUserDto().getEmail())
+                                .firstName(articleFromDatabase.getUserDto().getFirstName())
+                                .lastName(articleFromDatabase.getUserDto().getLastName())
+                                .password(articleFromDatabase.getUserDto().getPassword())
+                                .email(articleFromDatabase.getUserDto().getEmail())
                                 .build()
                 )
                 .tags(tagDtos)
                 .build();
 
-        String id = articleService.add(articleDto2);
+        String id = articleService.add(articleDto2, userId);
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }

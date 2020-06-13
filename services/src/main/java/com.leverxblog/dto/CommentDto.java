@@ -21,9 +21,4 @@ public class CommentDto {
     private ArticleDto articleDto;
     private UUID userId;
     private UUID articleId;
-
-    @JsonIgnore
-    public CommentDto getCommentDto() {
-        return this;
-    }
 }
