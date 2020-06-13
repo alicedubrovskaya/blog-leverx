@@ -34,7 +34,7 @@ public class ArticleService implements CrudService<ArticleDto> {
 
     @Override
     public String add(ArticleDto articleDto) {
- /*     List<TagEntity> tagsFromDatabase=new ArrayList<>();
+      List<TagEntity> tagsFromDatabase=new ArrayList<>();
         for(TagDto tagDto:articleDto.getTags()){
            TagEntity tagFromDatabase = tagRepository.findByName(tagDto.getName());
            if (tagFromDatabase!=null){
@@ -49,9 +49,7 @@ public class ArticleService implements CrudService<ArticleDto> {
                 }
             }
         }
-/
 
-  */
         ArticleEntity articleEntity = articleConverter.convert(articleDto);
 
         return String.valueOf(articleRepository.save(articleEntity).getId());
