@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
@@ -24,7 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String FIND_PUBLIC_ARTICLES = "/articles/public";
     private static final String REGISTER = "/register";
+    private static final String RESET="/register/reset";
     private static final String REGISTRATION_CONFIRMATION = "/register/registrationConfirm";
+    private static final String RESET_PASSWORD_CONFIRMATION="/register/resetPassword";
     private static final String AUTHENTICATE = "/authenticate";
     private static final String ADMIN_ROLE = "ADMIN";
     private static final String GET_ALL_USERS = "/users/get";
@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(FIND_PUBLIC_ARTICLES, REGISTER, REGISTRATION_CONFIRMATION
-                        , AUTHENTICATE, GET_ALL_USERS).permitAll()
+                        , AUTHENTICATE, GET_ALL_USERS, RESET,RESET_PASSWORD_CONFIRMATION).permitAll()
             //    .antMatchers(GET_ALL_USERS).hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
                 .and()

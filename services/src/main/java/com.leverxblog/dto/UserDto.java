@@ -1,9 +1,7 @@
 package com.leverxblog.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.leverxblog.entity.ArticleEntity;
 import com.leverxblog.entity.Role;
-import com.leverxblog.entity.VerificationTokenEntity;
+import com.leverxblog.entity.security.VerificationTokenEntity;
 import lombok.*;
 
 import java.util.ArrayList;

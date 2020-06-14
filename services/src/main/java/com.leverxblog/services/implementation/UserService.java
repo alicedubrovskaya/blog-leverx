@@ -3,18 +3,18 @@ package com.leverxblog.services.implementation;
 import com.leverxblog.converters.UserConverter;
 import com.leverxblog.dto.UserRegisterDto;
 import com.leverxblog.entity.UserEntity;
+import com.leverxblog.entity.security.PasswordResetToken;
+import com.leverxblog.entity.security.VerificationTokenEntity;
+import com.leverxblog.repository.PasswordResetTokenRepository;
 import com.leverxblog.repository.UserRepository;
 import com.leverxblog.dto.UserDto;
 import com.leverxblog.services.CrudService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,12 +22,14 @@ public class UserService implements CrudService<UserDto> {
     private UserConverter userConverter;
     private UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
-    public UserService(UserConverter userConverter, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserConverter userConverter, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     @Override
@@ -50,6 +52,16 @@ public class UserService implements CrudService<UserDto> {
     }
 
     @Override
+    public UserDto getByEmail(String email){
+        UserEntity userEntity=userRepository.findByEmail(email);
+        return userConverter.convert(userEntity);
+    }
+
+    public UserEntity getUserEntity(UserDto userDto){
+        return userConverter.convert(userDto);
+    }
+
+    @Override
     public String register(UserRegisterDto userRegisterDto) {
         if (userRepository.existsByLogin(userRegisterDto.getLogin())) {
             return null;
@@ -65,6 +77,17 @@ public class UserService implements CrudService<UserDto> {
         UserEntity userEntity=userConverter.convert(userDto);
         userRepository.save(userEntity);
         return userEntity;
+    }
+
+    @Override
+    public void createPasswordResetToken(UserEntity userEntity, String token) {
+        PasswordResetToken myToken = new PasswordResetToken(token, userEntity);
+        passwordResetTokenRepository.save(myToken);
+    }
+
+    @Override
+    public PasswordResetToken getPasswordResetToken(String token) {
+        return passwordResetTokenRepository.findByToken(token);
     }
 }
 

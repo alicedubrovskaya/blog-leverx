@@ -1,5 +1,6 @@
 package com.leverxblog.entity;
 
+import com.leverxblog.entity.security.VerificationTokenEntity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 

@@ -1,5 +1,6 @@
-package com.leverxblog.entity;
+package com.leverxblog.entity.security;
 
+import com.leverxblog.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,13 +18,14 @@ import java.util.Date;
 @NoArgsConstructor
 public class VerificationTokenEntity {
 
+    private static final int EXPIRATION = 60 * 24;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String token;
     private Date expiryDate;
-    private static final int EXPIRATION = 60 * 24;
 
 
     public VerificationTokenEntity(String token, UserEntity userEntity) {

@@ -9,13 +9,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestConfig {
 
-    @Bean
+/*    @Bean
     public TagConverter tagConverter() {
         return new TagConverter();
     }
 
-    @Bean
+ */
+
+ /*   @Bean
     UserConverter userConverter() {
         return new UserConverter();
     }
+
+  */
 }

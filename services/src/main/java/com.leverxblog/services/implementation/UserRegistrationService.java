@@ -1,7 +1,7 @@
 package com.leverxblog.services.implementation;
 
 import com.leverxblog.entity.UserEntity;
-import com.leverxblog.entity.VerificationTokenEntity;
+import com.leverxblog.entity.security.VerificationTokenEntity;
 import com.leverxblog.repository.UserRepository;
 import com.leverxblog.repository.VerificationTokenRepository;
 import com.leverxblog.services.IUserService;
