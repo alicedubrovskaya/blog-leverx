@@ -19,4 +19,6 @@ public interface ArticleService<T> {
     List <T> getByPublicStatus();
 
     List<T> findAll(Integer skip, Integer limit, String sort, String order);
+
+    T getByTitle(String title);
 }

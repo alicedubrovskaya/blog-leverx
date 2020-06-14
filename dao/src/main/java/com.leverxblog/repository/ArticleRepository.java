@@ -15,4 +15,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, UUID> {
     List<ArticleEntity> getByUserEntity_id(UUID userId);
 
     List<ArticleEntity> getByStatus(Status status);
+
+    ArticleEntity getByTitle(String string);
+
 }

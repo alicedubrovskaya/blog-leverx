@@ -49,6 +49,8 @@ public class UserConverter {
                 .createdAt(userDto.getCreatedAt())
                 .login(userDto.getLogin())
                 .role(userDto.getRole())
+                .enabled(userDto.isEnabled())
+                .verificationTokenEntity(userDto.getVerificationTokenEntity())
                 .build();
     }
 

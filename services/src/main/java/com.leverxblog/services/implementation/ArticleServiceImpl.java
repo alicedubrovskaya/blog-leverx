@@ -103,4 +103,8 @@ public class ArticleServiceImpl implements ArticleService<ArticleDto> {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public ArticleDto getByTitle(String title) {
+        return articleConverter.convert(articleRepository.getByTitle(title));
+    }
 }

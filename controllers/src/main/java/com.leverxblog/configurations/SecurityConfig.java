@@ -56,8 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(FIND_PUBLIC_ARTICLES, REGISTER, REGISTRATION_CONFIRMATION
-                        , AUTHENTICATE).permitAll()
-                .antMatchers(GET_ALL_USERS).hasRole(ADMIN_ROLE)
+                        , AUTHENTICATE, GET_ALL_USERS).permitAll()
+            //    .antMatchers(GET_ALL_USERS).hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfig(jwtTokenProvider))

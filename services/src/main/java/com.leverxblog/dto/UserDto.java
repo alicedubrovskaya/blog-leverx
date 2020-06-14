@@ -3,6 +3,7 @@ package com.leverxblog.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leverxblog.entity.ArticleEntity;
 import com.leverxblog.entity.Role;
+import com.leverxblog.entity.VerificationTokenEntity;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class UserDto {
     private Date createdAt;
     private String email;
     private Role role;
+    private boolean enabled;
+    private VerificationTokenEntity verificationTokenEntity;
     private List<ArticleDto> articles = new ArrayList<>();
+    private List<CommentDto> comments= new ArrayList<>();
 
 }
