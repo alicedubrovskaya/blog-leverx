@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements CrudService<UserDto> {
+public class UserServiceImpl implements CrudService<UserDto> {
     private UserConverter userConverter;
     private UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
-    public UserService(UserConverter userConverter, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PasswordResetTokenRepository passwordResetTokenRepository) {
+    public UserServiceImpl(UserConverter userConverter, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -34,7 +34,7 @@ public class UserService implements CrudService<UserDto> {
 
     @Override
     public String add(UserDto userDto) {
-        UserEntity userEntity=userConverter.convert(userDto);
+        UserEntity userEntity = userConverter.convert(userDto);
         return String.valueOf(userRepository.save(userEntity).getId());
     }
 
@@ -46,18 +46,18 @@ public class UserService implements CrudService<UserDto> {
     }
 
     @Override
-    public UserDto getByLogin(String login){
-        UserEntity userEntity=userRepository.findByLogin(login);
+    public UserDto getByLogin(String login) {
+        UserEntity userEntity = userRepository.findByLogin(login);
         return userConverter.convert(userEntity);
     }
 
     @Override
-    public UserDto getByEmail(String email){
-        UserEntity userEntity=userRepository.findByEmail(email);
+    public UserDto getByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
         return userConverter.convert(userEntity);
     }
 
-    public UserEntity getUserEntity(UserDto userDto){
+    public UserEntity getUserEntity(UserDto userDto) {
         return userConverter.convert(userDto);
     }
 
@@ -68,13 +68,13 @@ public class UserService implements CrudService<UserDto> {
         }
         userRegisterDto.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
         userRegisterDto.isRegistration();
-        String id=add(userRegisterDto);
+        String id = add(userRegisterDto);
         return id;
     }
 
     @Override
     public UserEntity addToRegister(UserDto userDto) {
-        UserEntity userEntity=userConverter.convert(userDto);
+        UserEntity userEntity = userConverter.convert(userDto);
         userRepository.save(userEntity);
         return userEntity;
     }

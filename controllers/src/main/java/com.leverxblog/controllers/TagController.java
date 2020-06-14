@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/articles")
 public class TagController {
 
-    private TagServiceImpl tagServiceImpl;
+    private final TagServiceImpl tagServiceImpl;
 
     @Autowired
     public TagController(TagServiceImpl tagServiceImpl) {
@@ -26,7 +26,7 @@ public class TagController {
     }
 
     @PostMapping("/addTag")
-    public ResponseEntity<Object> addNewTag(@RequestBody TagDto tagDto) {
+    public ResponseEntity<Map<String,String>> addNewTag(@RequestBody TagDto tagDto) {
         Map id = Collections.singletonMap("id", tagServiceImpl.add(tagDto));
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }

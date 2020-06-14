@@ -7,24 +7,24 @@ import com.leverxblog.dto.UserDto;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 @Component
 public class UserConverter {
+
     public UserDto convert(UserEntity userEntity) {
 
-        List<ArticleDto> articleDtos=new ArrayList<>();
-        userEntity.getArticles().forEach(
-                articleEntity->{
-                    articleDtos.add(ArticleDto.builder()
-                            .id(articleEntity.getId())
-                            .title(articleEntity.getTitle())
-                            .text(articleEntity.getText())
-                            .status(StatusDto.valueOf(articleEntity.getStatus().name()))
-                            .createdAt(articleEntity.getCreatedAt())
-                            .updatedAt(articleEntity.getUpdatedAt())
-                            .build()
-                    );
-                }
-        );
+        List<ArticleDto> articleDtos = userEntity.getArticles().stream()
+                .map(articleEntity -> ArticleDto.builder()
+                        .id(articleEntity.getId())
+                        .title(articleEntity.getTitle())
+                        .text(articleEntity.getText())
+                        .status(StatusDto.valueOf(articleEntity.getStatus().name()))
+                        .createdAt(articleEntity.getCreatedAt())
+                        .updatedAt(articleEntity.getUpdatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
         return UserDto.builder()
                 .id(userEntity.getId())
                 .firstName(userEntity.getFirstName())

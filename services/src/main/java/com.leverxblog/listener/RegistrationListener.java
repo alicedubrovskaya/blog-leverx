@@ -2,7 +2,7 @@ package com.leverxblog.listener;
 
 import com.leverxblog.entity.UserEntity;
 import com.leverxblog.event.OnRegistrationCompleteEvent;
-import com.leverxblog.services.implementation.UserRegistrationService;
+import com.leverxblog.services.implementation.UserRegistrationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
@@ -19,14 +19,14 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private static final String URL = "/register/registrationConfirm?token=";
     private static final String LOCALGOST = "http://localhost:8080";
 
-    private final UserRegistrationService service;
+    private final UserRegistrationServiceImpl service;
 
     private final MessageSource messages;
 
     private final JavaMailSender mailSender;
 
     @Autowired
-    public RegistrationListener(UserRegistrationService service, MessageSource messages, JavaMailSender mailSender) {
+    public RegistrationListener(UserRegistrationServiceImpl service, MessageSource messages, JavaMailSender mailSender) {
         this.service = service;
         this.messages = messages;
         this.mailSender = mailSender;

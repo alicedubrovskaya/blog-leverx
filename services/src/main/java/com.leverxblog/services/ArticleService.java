@@ -14,9 +14,9 @@ public interface ArticleService<T> {
 
     void delete(UUID id);
 
-    List <T> getByUserId(UUID userId);
+    List<T> getByUserId(UUID userId);
 
-    List <T> getByPublicStatus();
+    List<T> getByPublicStatus();
 
     List<T> findAll(Integer skip, Integer limit, String sort, String order);
 

@@ -4,7 +4,8 @@ import com.leverxblog.dto.ArticleDto;
 import com.leverxblog.dto.CommentDto;
 import com.leverxblog.services.implementation.ArticleServiceImpl;
 import com.leverxblog.services.implementation.CommentServiceImpl;
-import com.leverxblog.services.implementation.UserService;
+import com.leverxblog.services.implementation.UserServiceImpl;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +22,25 @@ import java.util.UUID;
 @RequestMapping("/articles")
 public class CommentController {
 
-    private CommentServiceImpl commentServiceImpl;
-    private UserService userService;
-    private ArticleServiceImpl articleServiceImpl;
+    private final CommentServiceImpl commentServiceImpl;
+    private final UserServiceImpl userServiceImpl;
+    private final ArticleServiceImpl articleServiceImpl;
 
     @Autowired
-    public CommentController(CommentServiceImpl commentServiceImpl, UserService userService, ArticleServiceImpl articleServiceImpl) {
+    public CommentController(CommentServiceImpl commentServiceImpl, UserServiceImpl userServiceImpl,
+                             ArticleServiceImpl articleServiceImpl) {
         this.commentServiceImpl = commentServiceImpl;
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
     }
 
     @PostMapping("/{articleId}/comments")
-    public ResponseEntity<Object> addNewComment(@PathVariable UUID articleId, @RequestBody CommentDto commentDto,
-                                                Authentication authentication) {
+    public ResponseEntity<Map<String, String>> addNewComment(@PathVariable UUID articleId,
+                                                             @RequestBody CommentDto commentDto,
+                                                             Authentication authentication) {
 
         String login = authentication.getName();
-        UUID userId = userService.getByLogin(login).getId();
+        UUID userId = userServiceImpl.getByLogin(login).getId();
 
         commentDto.setUserId(userId);
         commentDto.setArticleId(articleId);
@@ -56,8 +59,8 @@ public class CommentController {
     }
 
     @GetMapping("/{articleId}/comments/{commentId}")
-    public ResponseEntity<Object> getCommentOfArticleById(@PathVariable("articleId") UUID articleId,
-                                                          @PathVariable("commentId") UUID commentId) throws Exception {
+    public ResponseEntity<CommentDto> getCommentOfArticleById(@PathVariable("articleId") UUID articleId,
+                                                              @PathVariable("commentId") UUID commentId) {
 
         CommentDto commentDto = commentServiceImpl.getByArticleAndCommentId(articleId, commentId);
         if (commentDto == null) {
@@ -68,7 +71,7 @@ public class CommentController {
 
     @DeleteMapping("/{articleId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable UUID articleId, @PathVariable UUID commentId,
-                                              Authentication authentication) throws Exception {
+                                              Authentication authentication) throws NotFoundException {
 
         CommentDto comment = commentServiceImpl.getById(commentId);
 
@@ -78,7 +81,7 @@ public class CommentController {
 
         ArticleDto article = articleServiceImpl.getById(comment.getArticleId());
         String login = authentication.getName();
-        UUID userId = userService.getByLogin(login).getId();
+        UUID userId = userServiceImpl.getByLogin(login).getId();
 
         if ((comment.getUserId()).compareTo(userId) == 0 || (article.getUserEntity_id()).compareTo(userId) == 0) {
             commentServiceImpl.delete(commentId);
@@ -87,7 +90,7 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping(path="{articleId}/comments/sort")
+    @GetMapping(path = "{articleId}/comments/sort")
     public ResponseEntity<List<CommentDto>> getSortedComments(
             @PathVariable UUID articleId,
             @RequestParam(name = "skip", required = false, defaultValue = "1") Integer skip,

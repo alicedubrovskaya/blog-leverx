@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommentConverter {
-    public CommentDto convert(CommentEntity commentEntity){
+
+    public CommentDto convert(CommentEntity commentEntity) {
+
         return CommentDto.builder()
                 .id(commentEntity.getId())
                 .message(commentEntity.getMessage())
@@ -30,7 +32,7 @@ public class CommentConverter {
                 .build();
     }
 
-    public CommentEntity convert(CommentDto commentDto){
+    public CommentEntity convert(CommentDto commentDto) {
         return CommentEntity.builder()
                 .id(commentDto.getId())
                 .message(commentDto.getMessage())

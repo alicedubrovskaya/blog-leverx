@@ -3,7 +3,7 @@ package com.leverxblog.controllers;
 import com.leverxblog.dto.ArticleDto;
 import com.leverxblog.dto.UserDto;
 import com.leverxblog.services.implementation.ArticleServiceImpl;
-import com.leverxblog.services.implementation.UserService;
+import com.leverxblog.services.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,26 +16,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private UserService userService;
-    private ArticleServiceImpl articleServiceImpl;
+
+    private final UserServiceImpl userServiceImpl;
+    private final ArticleServiceImpl articleServiceImpl;
 
     @Autowired
-    public UserController(UserService userService, ArticleServiceImpl articleServiceImpl) {
-        this.userService = userService;
+    public UserController(UserServiceImpl userServiceImpl, ArticleServiceImpl articleServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
         this.articleServiceImpl = articleServiceImpl;
     }
 
- /*   @PostMapping(path = "/add")
-    public ResponseEntity<Object> addNewUser(@RequestBody UserDto userDto) {
-        Map id = Collections.singletonMap("id", userService.add(userDto));
-        return new ResponseEntity<>(id, HttpStatus.CREATED);
-    }
-
-  */
-
     @GetMapping(path = "/get")
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<UserDto> users = userService.getAll();
+        List<UserDto> users = userServiceImpl.getAll();
         if (CollectionUtils.isEmpty(users)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -44,7 +37,7 @@ public class UserController {
 
     @GetMapping(path = "/me")
     public ResponseEntity<List<ArticleDto>> getMyArticles(Authentication authentication) {
-        UserDto user = userService.getByLogin(authentication.getName());
+        UserDto user = userServiceImpl.getByLogin(authentication.getName());
 
         List<ArticleDto> articles = articleServiceImpl.getByUserId(user.getId());
         if (CollectionUtils.isEmpty(articles)) {

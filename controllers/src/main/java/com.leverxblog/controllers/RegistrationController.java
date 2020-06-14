@@ -8,8 +8,8 @@ import com.leverxblog.entity.security.VerificationTokenEntity;
 import com.leverxblog.event.OnRegistrationCompleteEvent;
 import com.leverxblog.event.OnResetPasswordEvent;
 import com.leverxblog.exception.UserNotFoundException;
-import com.leverxblog.services.implementation.UserRegistrationService;
-import com.leverxblog.services.implementation.UserService;
+import com.leverxblog.services.implementation.UserRegistrationServiceImpl;
+import com.leverxblog.services.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,6 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/register")
@@ -32,30 +31,32 @@ public class RegistrationController {
     private static final String SUBJECT = "Reset Password";
     private static final String MESSAGE_SUCCESSFUL_PASSWORD_RESET = "Your password is successfully changed";
 
-    private UserService userService;
-    private UserRegistrationService userRegistrationService;
-    private ApplicationEventPublisher eventPublisher;
+    private final UserServiceImpl userServiceImpl;
+    private final UserRegistrationServiceImpl userRegistrationServiceImpl;
+    private final ApplicationEventPublisher eventPublisher;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender mailSender;
 
     @Autowired
-    public RegistrationController(UserService userService, UserRegistrationService userRegistrationService, ApplicationEventPublisher eventPublisher, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender mailSender) {
-        this.userService = userService;
-        this.userRegistrationService = userRegistrationService;
+    public RegistrationController(UserServiceImpl userServiceImpl, UserRegistrationServiceImpl userRegistrationServiceImpl,
+                                  ApplicationEventPublisher eventPublisher, BCryptPasswordEncoder bCryptPasswordEncoder,
+                                  JavaMailSender mailSender) {
+        this.userServiceImpl = userServiceImpl;
+        this.userRegistrationServiceImpl = userRegistrationServiceImpl;
         this.eventPublisher = eventPublisher;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.mailSender = mailSender;
     }
 
     @PostMapping
-    public ResponseEntity<Object> registerUser(@RequestBody UserRegisterDto userRegisterDto, WebRequest request) {
+    public ResponseEntity<Void> registerUser(@RequestBody UserRegisterDto userRegisterDto, WebRequest request) {
         userRegisterDto.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
 
-        UserEntity userEntity = userService.addToRegister(userRegisterDto);
+        UserEntity userEntity = userServiceImpl.addToRegister(userRegisterDto);
         if (userEntity == null) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
-        //add try for exception
+
         String appUrl = request.getContextPath();
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userEntity, appUrl, request.getLocale()));
         return new ResponseEntity<>(HttpStatus.OK);
@@ -65,7 +66,7 @@ public class RegistrationController {
     public ResponseEntity<Void> confirmRegistration(@RequestParam("token") String token, WebRequest request) {
 
         Locale locale = request.getLocale();
-        VerificationTokenEntity verificationTokenEntity = userRegistrationService.getVerificationToken(token);
+        VerificationTokenEntity verificationTokenEntity = userRegistrationServiceImpl.getVerificationToken(token);
         if (verificationTokenEntity == null) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
@@ -78,7 +79,7 @@ public class RegistrationController {
 
         userEntity.setEnabled(true);
         userEntity.setCreatedAt(new Date(System.currentTimeMillis()));
-        userRegistrationService.saveRegisteredUser(userEntity);
+        userRegistrationServiceImpl.saveRegisteredUser(userEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -86,13 +87,13 @@ public class RegistrationController {
     public ResponseEntity<Void> resetPassword(@RequestParam("email") String email,
                                               @RequestParam String password,
                                               WebRequest request) throws Exception {
-        UserDto userDto = userService.getByEmail(email);
+        UserDto userDto = userServiceImpl.getByEmail(email);
         if (userDto == null) {
             throw new UserNotFoundException(email);
         }
 
         String appUrl = request.getContextPath();
-        eventPublisher.publishEvent(new OnResetPasswordEvent(userService.getUserEntity(userDto),
+        eventPublisher.publishEvent(new OnResetPasswordEvent(userServiceImpl.getUserEntity(userDto),
                 bCryptPasswordEncoder.encode(password),
                 appUrl, request.getLocale()));
         return new ResponseEntity<>(HttpStatus.OK);
@@ -104,7 +105,7 @@ public class RegistrationController {
                                                      WebRequest request) {
 
         Locale locale = request.getLocale();
-        PasswordResetToken passwordResetToken = userService.getPasswordResetToken(token);
+        PasswordResetToken passwordResetToken = userServiceImpl.getPasswordResetToken(token);
         if (passwordResetToken == null) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
@@ -117,7 +118,7 @@ public class RegistrationController {
 
         userEntity.setCreatedAt(new Date(System.currentTimeMillis()));
         userEntity.setPassword(password);
-        userRegistrationService.saveRegisteredUser(userEntity);
+        userRegistrationServiceImpl.saveRegisteredUser(userEntity);
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(userEntity.getEmail());

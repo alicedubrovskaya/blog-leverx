@@ -6,7 +6,8 @@ import com.leverxblog.dto.TagDto;
 import com.leverxblog.dto.UserDto;
 
 import com.leverxblog.services.implementation.ArticleServiceImpl;
-import com.leverxblog.services.implementation.UserService;
+import com.leverxblog.services.implementation.UserServiceImpl;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -20,19 +21,20 @@ import java.util.*;
 @RequestMapping("/articles")
 public class ArticleController {
 
-    private ArticleServiceImpl articleServiceImpl;
-    private UserService userService;
+    private final ArticleServiceImpl articleServiceImpl;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public ArticleController(ArticleServiceImpl articleServiceImpl, UserService userService) {
+    public ArticleController(ArticleServiceImpl articleServiceImpl, UserServiceImpl userServiceImpl) {
         this.articleServiceImpl = articleServiceImpl;
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
     }
 
     @PostMapping
-    public ResponseEntity<Object> addNewArticle(@RequestBody ArticleDto articleDto, Authentication authentication) {
+    public ResponseEntity<Map<String, String>> addNewArticle(@RequestBody ArticleDto articleDto,
+                                                             Authentication authentication) {
         String login = authentication.getName();
-        UUID userId = userService.getByLogin(login).getId();
+        UUID userId = userServiceImpl.getByLogin(login).getId();
         Map id = Collections.singletonMap("id", articleServiceImpl.add(articleDto, userId));
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
@@ -55,7 +57,7 @@ public class ArticleController {
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
-    @GetMapping(path="/sort")
+    @GetMapping(path = "/sort")
     public ResponseEntity<List<ArticleDto>> getSortedArticles(
             @RequestParam(name = "skip", required = false, defaultValue = "1") Integer skip,
             @RequestParam(name = "limit", required = false, defaultValue = "3") Integer limit,
@@ -67,9 +69,11 @@ public class ArticleController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") UUID id, Authentication authentication) throws Exception {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id,
+                                       Authentication authentication)
+            throws NotFoundException {
         ArticleDto articleDto = articleServiceImpl.getById(id);
-        UserDto user = userService.getByLogin(authentication.getName());
+        UserDto user = userServiceImpl.getByLogin(authentication.getName());
 
         if (articleDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -84,11 +88,11 @@ public class ArticleController {
     }
 
     @PutMapping(path = "/{userId}")
-    public ResponseEntity<Object> update(@PathVariable UUID userId, @RequestBody ArticleDto articleDto,
-                                         Authentication authentication) throws Exception {
+    public ResponseEntity<String> update(@PathVariable UUID userId, @RequestBody ArticleDto articleDto,
+                                         Authentication authentication) throws NotFoundException {
 
         ArticleDto articleFromDatabase = articleServiceImpl.getById(articleDto.getId());
-        UserDto user = userService.getByLogin(authentication.getName());
+        UserDto user = userServiceImpl.getByLogin(authentication.getName());
 
         if (articleFromDatabase == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

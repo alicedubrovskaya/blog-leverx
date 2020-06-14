@@ -9,19 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserRegistrationService implements IUserService {
+public class UserRegistrationServiceImpl implements IUserService {
     private UserRepository userRepository;
     private VerificationTokenRepository verificationTokenRepository;
 
     @Autowired
-    public UserRegistrationService(UserRepository userRepository, VerificationTokenRepository verificationTokenRepository) {
+    public UserRegistrationServiceImpl(UserRepository userRepository, VerificationTokenRepository verificationTokenRepository) {
         this.userRepository = userRepository;
         this.verificationTokenRepository = verificationTokenRepository;
     }
 
     @Override
     public void createVerificationToken(UserEntity userEntity, String token) {
-        VerificationTokenEntity myToken= new VerificationTokenEntity(token,userEntity);
+        VerificationTokenEntity myToken = new VerificationTokenEntity(token, userEntity);
         verificationTokenRepository.save(myToken);
     }
 

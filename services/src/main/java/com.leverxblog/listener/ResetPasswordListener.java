@@ -2,11 +2,9 @@ package com.leverxblog.listener;
 
 import com.leverxblog.entity.UserEntity;
 import com.leverxblog.event.OnResetPasswordEvent;
-import com.leverxblog.services.implementation.UserRegistrationService;
-import com.leverxblog.services.implementation.UserService;
+import com.leverxblog.services.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -20,12 +18,12 @@ public class ResetPasswordListener implements ApplicationListener<OnResetPasswor
     private static final String URL_END = "&password=";
     private static final String LOCALGOST = "http://localhost:8080";
 
-    private final UserService service;
+    private final UserServiceImpl service;
 
     private final JavaMailSender mailSender;
 
     @Autowired
-    public ResetPasswordListener(UserService service, JavaMailSender mailSender) {
+    public ResetPasswordListener(UserServiceImpl service, JavaMailSender mailSender) {
         this.service = service;
         this.mailSender = mailSender;
     }

@@ -14,6 +14,7 @@ import com.leverxblog.repository.ArticleRepository;
 import com.leverxblog.repository.TagRepository;
 import com.leverxblog.repository.queries.ArticleQueryRepository;
 import com.leverxblog.services.ArticleService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class ArticleServiceImpl implements ArticleService<ArticleDto> {
     private TagConverter tagConverter;
     private ArticleRepository articleRepository;
     private TagRepository tagRepository;
-    private ArticleQueryRepository  articleQueryRepository;
+    private ArticleQueryRepository articleQueryRepository;
 
     @Autowired
     public ArticleServiceImpl(ArticleConverter articleConverter, ArticleRepository articleRepository,
@@ -76,7 +77,7 @@ public class ArticleServiceImpl implements ArticleService<ArticleDto> {
     }
 
     @Override
-    public ArticleDto getById(UUID id) throws Exception {
+    public ArticleDto getById(UUID id) throws NotFoundException {
         ArticleEntity articleEntity = articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
         return articleConverter.convert(articleEntity);
     }
@@ -99,7 +100,7 @@ public class ArticleServiceImpl implements ArticleService<ArticleDto> {
         return articleQueryRepository
                 .findAll(new Page(skip, limit), new ArticleSortProvider(sort, order))
                 .stream()
-                .map(articleEntity ->  articleConverter.convert(articleEntity))
+                .map(articleEntity -> articleConverter.convert(articleEntity))
                 .collect(Collectors.toList());
     }
 

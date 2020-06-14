@@ -12,27 +12,16 @@ import java.util.List;
 
 @Component
 public class TagConverter {
-    public TagEntity convert(TagDto tagDto){
-     /*   List<ArticleEntity> articleEntities=new ArrayList<>();
-        for(ArticleDto articleDto: tagDto.getArticles()){
-            articleEntities.add(ArticleEntity.builder()
-                    .id(articleDto.getId())
-                    .build()
-            );
-        }
-        //
-      */
+
+    public TagEntity convert(TagDto tagDto) {
         return TagEntity.builder()
                 .id(tagDto.getId())
                 .name(tagDto.getName())
-               // .articles(articleEntities)
                 .build();
     }
 
-
-    //add articles
-    public TagDto convert(TagEntity tagEntity){
-        return  TagDto.builder()
+    public TagDto convert(TagEntity tagEntity) {
+        return TagDto.builder()
                 .id(tagEntity.getId())
                 .name(tagEntity.getName())
                 .build();

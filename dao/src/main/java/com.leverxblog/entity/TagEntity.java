@@ -26,14 +26,4 @@ public class TagEntity {
 
     @Column(name = "name")
     private String name;
-
- /*   @ManyToMany
-    @JoinTable(name = "articles_tags",
-            joinColumns = @JoinColumn(name = "tag_id"),
-            inverseJoinColumns = @JoinColumn(name = "article_id")
-    )
-    private List<ArticleEntity> articles;
-
-
-  */
 }

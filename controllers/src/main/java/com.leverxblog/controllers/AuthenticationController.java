@@ -3,7 +3,7 @@ package com.leverxblog.controllers;
 import com.leverxblog.authentification.jwt.JwtTokenProvider;
 import com.leverxblog.dto.UserAuthDto;
 import com.leverxblog.dto.UserDto;
-import com.leverxblog.services.implementation.UserService;
+import com.leverxblog.services.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,17 +21,19 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/authenticate")
-public class AuthentificationController {
+public class AuthenticationController {
+
+    private static final String INCORRECT_LOGIN_OR_PASSWORD = "Incorrect login or password";
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public AuthentificationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserServiceImpl userServiceImpl) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
     }
 
     @PostMapping
@@ -39,7 +41,7 @@ public class AuthentificationController {
         try {
             String login = userAuthDto.getLogin();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, userAuthDto.getPassword()));
-            UserDto userDto = userService.getByLogin(login);
+            UserDto userDto = userServiceImpl.getByLogin(login);
 
             if (userDto == null) {
                 throw new UsernameNotFoundException("User with login: " + login + " not found");
@@ -53,7 +55,7 @@ public class AuthentificationController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new SecurityException("Incorrect login or password");
+            throw new SecurityException(INCORRECT_LOGIN_OR_PASSWORD);
         }
     }
 }

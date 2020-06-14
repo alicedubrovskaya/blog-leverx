@@ -9,6 +9,7 @@ import com.leverxblog.filtration.impl.CommentSortProvider;
 import com.leverxblog.repository.CommentRepository;
 import com.leverxblog.repository.queries.CommentQueryRepository;
 import com.leverxblog.services.CommentService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +47,8 @@ public class CommentServiceImpl implements CommentService<CommentDto> {
     }
 
     @Override
-    public CommentDto getById(UUID id) throws Exception {
-        CommentEntity commentEntity =commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
+    public CommentDto getById(UUID id) throws NotFoundException {
+        CommentEntity commentEntity = commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
         return commentConverter.convert(commentEntity);
     }
 
@@ -75,7 +76,7 @@ public class CommentServiceImpl implements CommentService<CommentDto> {
         return commentQueryRepository
                 .findAll(new Page(skip, limit), new CommentSortProvider(sort, order))
                 .stream()
-                .map(articleEntity ->  commentConverter.convert(articleEntity))
+                .map(articleEntity -> commentConverter.convert(articleEntity))
                 .collect(Collectors.toList());
     }
 }
