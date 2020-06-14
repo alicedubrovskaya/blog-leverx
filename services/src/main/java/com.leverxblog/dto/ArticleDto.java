@@ -25,7 +25,5 @@ public class ArticleDto {
     private Date updatedAt;
     private UserDto userDto;
     private StatusDto status;
-    private List<TagDto> tags=new ArrayList<>();
-
-
+    private List<TagDto> tags = new ArrayList<>();
 }

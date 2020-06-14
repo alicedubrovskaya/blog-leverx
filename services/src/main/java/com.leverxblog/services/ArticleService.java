@@ -3,7 +3,7 @@ package com.leverxblog.services;
 import java.util.List;
 import java.util.UUID;
 
-public interface ArticeServ<T> {
+public interface ArticleService<T> {
     String add(T t, UUID userId);
 
     List<T> getAll();

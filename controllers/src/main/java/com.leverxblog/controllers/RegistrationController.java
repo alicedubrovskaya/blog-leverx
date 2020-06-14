@@ -2,7 +2,7 @@ package com.leverxblog.controllers;
 
 import com.leverxblog.dto.UserRegisterDto;
 import com.leverxblog.entity.UserEntity;
-import com.leverxblog.entity.VerificationToken;
+import com.leverxblog.entity.VerificationTokenEntity;
 import com.leverxblog.event.OnRegistrationCompleteEvent;
 import com.leverxblog.services.implementation.UserRegistrationService;
 import com.leverxblog.services.implementation.UserService;
@@ -52,14 +52,14 @@ public class RegistrationController {
     public ResponseEntity<Void> confirmRegistration(@RequestParam("token") String token, WebRequest request) {
 
         Locale locale = request.getLocale();
-        VerificationToken verificationToken = userRegistrationService.getVerificationToken(token);
-        if (verificationToken == null) {
+        VerificationTokenEntity verificationTokenEntity = userRegistrationService.getVerificationToken(token);
+        if (verificationTokenEntity == null) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
 
-        UserEntity userEntity = verificationToken.getUserEntity();
+        UserEntity userEntity = verificationTokenEntity.getUserEntity();
         Calendar calendar = Calendar.getInstance();
-        if ((verificationToken.getExpiryDate().getTime() - calendar.getTime().getTime()) <= 0) {
+        if ((verificationTokenEntity.getExpiryDate().getTime() - calendar.getTime().getTime()) <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
         }
 

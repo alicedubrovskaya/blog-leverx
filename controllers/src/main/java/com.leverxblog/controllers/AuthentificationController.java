@@ -22,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/authenticate")
 public class AuthentificationController {
+
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private UserService userService;
@@ -34,28 +35,25 @@ public class AuthentificationController {
     }
 
     @PostMapping
-    public ResponseEntity authenticate(@RequestBody UserAuthDto userAuthDto){
-        try{
+    public ResponseEntity authenticate(@RequestBody UserAuthDto userAuthDto) {
+        try {
             String login = userAuthDto.getLogin();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, userAuthDto.getPassword()));
-            UserDto userDto=userService.getByLogin(login);
+            UserDto userDto = userService.getByLogin(login);
 
-            if (userDto==null){
+            if (userDto == null) {
                 throw new UsernameNotFoundException("User with login: " + login + " not found");
             }
 
             String token = jwtTokenProvider.createToken(login);
-            Map<Object,Object> response= new HashMap<>();
+            Map<Object, Object> response = new HashMap<>();
             response.put("login", userDto.getLogin());
             response.put("firstName", userDto.getFirstName());
-            response.put("token",token);
+            response.put("token", token);
 
             return ResponseEntity.ok(response);
-        }
-        catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             throw new SecurityException("Incorrect login or password");
         }
     }
-
-
 }

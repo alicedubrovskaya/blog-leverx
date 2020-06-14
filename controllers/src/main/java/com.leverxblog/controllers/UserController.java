@@ -2,7 +2,7 @@ package com.leverxblog.controllers;
 
 import com.leverxblog.dto.ArticleDto;
 import com.leverxblog.dto.UserDto;
-import com.leverxblog.services.implementation.ArticleService;
+import com.leverxblog.services.implementation.ArticleServiceImpl;
 import com.leverxblog.services.implementation.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,12 +17,12 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private UserService userService;
-    private ArticleService articleService;
+    private ArticleServiceImpl articleServiceImpl;
 
     @Autowired
-    public UserController(UserService userService, ArticleService articleService) {
+    public UserController(UserService userService, ArticleServiceImpl articleServiceImpl) {
         this.userService = userService;
-        this.articleService = articleService;
+        this.articleServiceImpl = articleServiceImpl;
     }
 
  /*   @PostMapping(path = "/add")
@@ -42,15 +42,14 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping(path="/me")
-    public ResponseEntity<List<ArticleDto>> getMyArticles(Authentication authentication){
+    @GetMapping(path = "/me")
+    public ResponseEntity<List<ArticleDto>> getMyArticles(Authentication authentication) {
         UserDto user = userService.getByLogin(authentication.getName());
 
-        List <ArticleDto> articles = articleService.getByUserId(user.getId());
+        List<ArticleDto> articles = articleServiceImpl.getByUserId(user.getId());
         if (CollectionUtils.isEmpty(articles)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
-
 }

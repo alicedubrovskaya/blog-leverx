@@ -15,8 +15,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class VerificationToken {
-    private static final int EXPIRATION=60 *24;  //?
+public class VerificationTokenEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,23 +23,23 @@ public class VerificationToken {
 
     private String token;
     private Date expiryDate;
+    private static final int EXPIRATION = 60 * 24;
 
 
-    public VerificationToken(String token, UserEntity userEntity) {
+    public VerificationTokenEntity(String token, UserEntity userEntity) {
         this.token = token;
         this.userEntity = userEntity;
-        this.expiryDate=calculateExpiryDate(EXPIRATION);
+        this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
     @OneToOne
-    @JoinColumn(nullable = false, name="userEntity_id")
+    @JoinColumn(nullable = false, name = "userEntity_id")
     private UserEntity userEntity;
 
-    private Date calculateExpiryDate(int expiryTimeInMinutes){
-        Calendar calendar=Calendar.getInstance();
+    private Date calculateExpiryDate(int expiryTimeInMinutes) {
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Timestamp(calendar.getTime().getTime()));
         calendar.add(Calendar.MINUTE, expiryTimeInMinutes);
         return new Date(calendar.getTime().getTime());
     }
-
 }

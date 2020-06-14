@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
@@ -20,20 +21,28 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableWebSecurity
 @EnableOAuth2Client
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String FIND_PUBLIC_ARTICLES = "/articles/public";
+    private static final String REGISTER = "/register";
+    private static final String REGISTRATION_CONFIRMATION = "/register/registrationConfirm";
+    private static final String AUTHENTICATE = "/authenticate";
+    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String GET_ALL_USERS = "/users/get";
+
     private final PasswordEncoder passwordEncoder;
     private final OAuth2ClientContext oAuth2ClientContext;
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsServiceImpl;
 
-
     @Autowired
     public SecurityConfig(PasswordEncoder passwordEncoder, OAuth2ClientContext oAuth2ClientContext,
-                          UserService userService, JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsServiceImpl) {
+                          UserService userService, JwtTokenProvider jwtTokenProvider,
+                          UserDetailsService userDetailsServiceImpl) {
         this.passwordEncoder = passwordEncoder;
         this.oAuth2ClientContext = oAuth2ClientContext;
         this.userService = userService;
-        this.jwtTokenProvider=jwtTokenProvider;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
@@ -43,13 +52,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers( "/articles/public","/register",
-                        "/register/registrationConfirm", "/authenticate").permitAll()
-                .antMatchers("/articles/addTag").hasRole("ADMIN")
+                .antMatchers(FIND_PUBLIC_ARTICLES, REGISTER, REGISTRATION_CONFIRMATION
+                        , AUTHENTICATE).permitAll()
+                .antMatchers(GET_ALL_USERS).hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfig(jwtTokenProvider))

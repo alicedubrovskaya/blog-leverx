@@ -1,7 +1,8 @@
-package com.leverxblog.repository;
+package com.leverxblog.repository.impl;
 
 
 import com.leverxblog.entity.ArticleEntity;
+import com.leverxblog.repository.TagRepositoryQuery;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -9,15 +10,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 @NoArgsConstructor
-public class TagRepositoryImpl implements TagRepositoryQuery{
+public class TagRepositoryImpl implements TagRepositoryQuery {
 
     private static final String SELECT_FROM_ARTICLES_TAGS_WHERE_TAG_ID =
             "SELECT * FROM articles_tags WHERE tag_id = ?";
-    private static final String SELECT_FROM_ARTICLES_TAGS_WHERE_TAG_ID_IN_LIST=
+    private static final String SELECT_FROM_ARTICLES_TAGS_WHERE_TAG_ID_IN_LIST =
             "SELECT DISTINCT BIN_TO_UUID(article_id)  FROM articles_tags WHERE tag_id IN :list";
 
     @PersistenceContext
@@ -32,8 +32,8 @@ public class TagRepositoryImpl implements TagRepositoryQuery{
 
     @Override
     public List<ArticleEntity> findByTagsIds(List<Long> ids) {
-        Query query=entityManager.createNativeQuery(SELECT_FROM_ARTICLES_TAGS_WHERE_TAG_ID_IN_LIST);
-        query.setParameter("list",ids);
+        Query query = entityManager.createNativeQuery(SELECT_FROM_ARTICLES_TAGS_WHERE_TAG_ID_IN_LIST);
+        query.setParameter("list", ids);
         return query.getResultList();
     }
 }

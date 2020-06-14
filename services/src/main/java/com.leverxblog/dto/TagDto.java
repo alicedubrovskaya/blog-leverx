@@ -17,9 +17,5 @@ import java.util.UUID;
 public class TagDto {
     private Long id;
     private String name;
-    private List<ArticleDto> articles=new ArrayList<>();
-
-    public void addArticle(ArticleDto articleDto){
-        this.articles.add(articleDto);
-    }
+    private List<ArticleDto> articles = new ArrayList<>();
 }

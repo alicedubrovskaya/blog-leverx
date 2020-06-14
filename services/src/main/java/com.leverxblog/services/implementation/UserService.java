@@ -7,6 +7,7 @@ import com.leverxblog.repository.UserRepository;
 import com.leverxblog.dto.UserDto;
 import com.leverxblog.services.CrudService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,16 +30,10 @@ public class UserService implements CrudService<UserDto> {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-
-
     @Override
     public String add(UserDto userDto) {
-        return String.valueOf(userRepository.save(userConverter.convert(userDto)).getId());
-    }
-
-    @Override
-    public void delete(UUID id) {
-
+        UserEntity userEntity=userConverter.convert(userDto);
+        return String.valueOf(userRepository.save(userEntity).getId());
     }
 
     @Override
@@ -49,14 +44,12 @@ public class UserService implements CrudService<UserDto> {
     }
 
     @Override
-    public UserDto getById(UUID id) throws Exception {
-        return null;
-    }
-
     public UserDto getByLogin(String login){
-        return userConverter.convert(userRepository.findByLogin(login));
+        UserEntity userEntity=userRepository.findByLogin(login);
+        return userConverter.convert(userEntity);
     }
 
+    @Override
     public String register(UserRegisterDto userRegisterDto) {
         if (userRepository.existsByLogin(userRegisterDto.getLogin())) {
             return null;
@@ -67,11 +60,11 @@ public class UserService implements CrudService<UserDto> {
         return id;
     }
 
+    @Override
     public UserEntity addToRegister(UserDto userDto) {
         UserEntity userEntity=userConverter.convert(userDto);
         userRepository.save(userEntity);
         return userEntity;
     }
-
 }
 

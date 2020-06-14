@@ -11,5 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface TagRepository extends JpaRepository<TagEntity, Long> {
+
      TagEntity findByName(String tagName);
 }

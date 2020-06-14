@@ -1,15 +1,19 @@
 package com.leverxblog.services;
 
+import com.leverxblog.dto.UserDto;
+import com.leverxblog.dto.UserRegisterDto;
+import com.leverxblog.entity.UserEntity;
+
 import java.util.List;
-import java.util.UUID;
 
 public interface CrudService<T> {
     String add(T t);
 
     List<T> getAll();
 
-    T getById(UUID id) throws Exception;
+    UserEntity addToRegister(T t);
 
-    void delete(UUID id);
+    String register(UserRegisterDto userRegisterDto);
 
+    T getByLogin(String login);
 }

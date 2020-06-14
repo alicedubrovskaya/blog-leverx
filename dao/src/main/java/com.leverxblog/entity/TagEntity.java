@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "tags")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "tags")
 public class TagEntity {
 
     @Id
@@ -27,11 +27,13 @@ public class TagEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany
-    @JoinTable(name="articles_tags",
-            joinColumns =@JoinColumn(name="tag_id"),
-            inverseJoinColumns = @JoinColumn(name="article_id")
+ /*   @ManyToMany
+    @JoinTable(name = "articles_tags",
+            joinColumns = @JoinColumn(name = "tag_id"),
+            inverseJoinColumns = @JoinColumn(name = "article_id")
     )
     private List<ArticleEntity> articles;
 
+
+  */
 }

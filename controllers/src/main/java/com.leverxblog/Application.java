@@ -22,45 +22,6 @@ public class Application {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource=new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages");
-        messageSource.setDefaultEncoding("UTF-8");
-        return  messageSource;
-    }
-
-    @Bean
-    public JavaMailSender getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-
-        mailSender.setUsername("blogleverx@gmail.com");
-        mailSender.setPassword("Blogleverx06");
-
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
-
-        return mailSender;
-    }
-
-    @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory();
-    }
-
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
-        return template;
-    }
-
     public static void main(String[] args) {
 
         SpringApplication.run(Application.class, args);

@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 public class UserDetailsImpl implements UserDetails {
+
     private UserEntity user;
 
     public UserDetailsImpl(UserEntity user) {
@@ -23,7 +24,6 @@ public class UserDetailsImpl implements UserDetails {
     public void setUser(UserEntity user) {
         this.user = user;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -68,6 +68,5 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return user != null && user.isEnabled();
     }
-
 
 }

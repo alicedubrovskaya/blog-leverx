@@ -24,17 +24,6 @@ public class UserDto {
     private Date createdAt;
     private String email;
     private Role role;
-    private List<ArticleDto> articles=new ArrayList<>();
-
-    @JsonIgnore
-    public UserDto getUser() {
-        return this;
-    }
-
-    @JsonIgnore
-    public void addArticle(ArticleDto articleDto) {
-        this.articles.add(articleDto);
-        articleDto.setUserDto(this);
-    }
+    private List<ArticleDto> articles = new ArrayList<>();
 
 }

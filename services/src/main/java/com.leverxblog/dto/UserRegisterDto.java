@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UserRegisterDto extends UserDto {
- //   private String login;
     private boolean registration;
 }
