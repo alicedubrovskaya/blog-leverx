@@ -8,11 +8,15 @@ import com.leverxblog.entity.ArticleEntity;
 import com.leverxblog.entity.Status;
 import com.leverxblog.entity.TagEntity;
 import com.leverxblog.exception.ArticleNotFoundException;
+import com.leverxblog.filtration.impl.ArticleSortProvider;
+import com.leverxblog.filtration.Page;
 import com.leverxblog.repository.ArticleRepository;
 import com.leverxblog.repository.TagRepository;
+import com.leverxblog.repository.queries.ArticleQueryRepository;
 import com.leverxblog.services.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -25,14 +29,16 @@ public class ArticleServiceImpl implements ArticleService<ArticleDto> {
     private TagConverter tagConverter;
     private ArticleRepository articleRepository;
     private TagRepository tagRepository;
+    private ArticleQueryRepository  articleQueryRepository;
 
     @Autowired
     public ArticleServiceImpl(ArticleConverter articleConverter, ArticleRepository articleRepository,
-                              TagRepository tagRepository, TagConverter tagConverter) {
+                              TagRepository tagRepository, TagConverter tagConverter, ArticleQueryRepository articleQueryRepository) {
         this.articleConverter = articleConverter;
         this.articleRepository = articleRepository;
         this.tagRepository = tagRepository;
         this.tagConverter = tagConverter;
+        this.articleQueryRepository = articleQueryRepository;
     }
 
     @Override
@@ -86,4 +92,15 @@ public class ArticleServiceImpl implements ArticleService<ArticleDto> {
                 .map(articleEntity -> articleConverter.convert(articleEntity))
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    @Override
+    public List<ArticleDto> findAll(Integer skip, Integer limit, String sort, String order) {
+        return articleQueryRepository
+                .findAll(new Page(skip, limit), new ArticleSortProvider(sort, order))
+                .stream()
+                .map(articleEntity ->  articleConverter.convert(articleEntity))
+                .collect(Collectors.toList());
+    }
+
 }

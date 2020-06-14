@@ -1,8 +1,8 @@
-package com.leverxblog.repository.impl;
+package com.leverxblog.repository.queries.impl;
 
 
 import com.leverxblog.entity.ArticleEntity;
-import com.leverxblog.repository.TagRepositoryQuery;
+import com.leverxblog.repository.queries.TagQueryRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @NoArgsConstructor
-public class TagRepositoryImpl implements TagRepositoryQuery {
+public class TagQueryRepositoryImpl implements TagQueryRepository {
 
     private static final String SELECT_FROM_ARTICLES_TAGS_WHERE_TAG_ID =
             "SELECT * FROM articles_tags WHERE tag_id = ?";

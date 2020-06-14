@@ -86,4 +86,16 @@ public class CommentController {
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
+
+    @GetMapping(path="{articleId}/comments/sort")
+    public ResponseEntity<List<CommentDto>> getSortedComments(
+            @PathVariable UUID articleId,
+            @RequestParam(name = "skip", required = false, defaultValue = "1") Integer skip,
+            @RequestParam(name = "limit", required = false, defaultValue = "3") Integer limit,
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "order", required = false) String order
+    ) {
+        List<CommentDto> comments = commentServiceImpl.findAll(skip, limit, sort, order);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
 }

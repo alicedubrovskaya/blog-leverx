@@ -55,6 +55,17 @@ public class ArticleController {
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
+    @GetMapping(path="/sort")
+    public ResponseEntity<List<ArticleDto>> getSortedArticles(
+            @RequestParam(name = "skip", required = false, defaultValue = "1") Integer skip,
+            @RequestParam(name = "limit", required = false, defaultValue = "3") Integer limit,
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "order", required = false) String order
+    ) {
+        List<ArticleDto> articles = articleServiceImpl.findAll(skip, limit, sort, order);
+        return new ResponseEntity<>(articles, HttpStatus.OK);
+    }
+
     @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") UUID id, Authentication authentication) throws Exception {
         ArticleDto articleDto = articleServiceImpl.getById(id);

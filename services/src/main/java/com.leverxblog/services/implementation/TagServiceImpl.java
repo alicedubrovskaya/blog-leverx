@@ -6,7 +6,7 @@ import com.leverxblog.dto.TagDto;
 import com.leverxblog.entity.ArticleEntity;
 import com.leverxblog.entity.TagEntity;
 import com.leverxblog.repository.TagRepository;
-import com.leverxblog.repository.TagRepositoryQuery;
+import com.leverxblog.repository.queries.TagQueryRepository;
 import com.leverxblog.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService<TagDto> {
     private TagRepository tagRepository;
     private TagConverter tagConverter;
-    private TagRepositoryQuery tagRepositoryQuery;
+    private TagQueryRepository tagQueryRepository;
 
     @Autowired
-    public TagServiceImpl(TagRepository tagRepository, TagConverter tagConverter, TagRepositoryQuery tagRepositoryQuery) {
+    public TagServiceImpl(TagRepository tagRepository, TagConverter tagConverter, TagQueryRepository tagQueryRepository) {
         this.tagRepository = tagRepository;
-        this.tagRepositoryQuery = tagRepositoryQuery;
+        this.tagQueryRepository = tagQueryRepository;
         this.tagConverter = tagConverter;
     }
 
@@ -49,7 +49,7 @@ public class TagServiceImpl implements TagService<TagDto> {
         List<Long> tagIds = tagNames.stream()
                 .map(tagName -> tagRepository.findByName(tagName).getId())
                 .collect(Collectors.toList());
-        List<ArticleEntity> articlesList = tagRepositoryQuery.findByTagsIds(tagIds);
+        List<ArticleEntity> articlesList = tagQueryRepository.findByTagsIds(tagIds);
         return null;
     }
 
@@ -57,7 +57,7 @@ public class TagServiceImpl implements TagService<TagDto> {
     @Transactional
     public Map<String, Integer> amountOfArticlesByTag(TagDto tagDto) {
         Map<String, Integer> tags = new HashMap<>();
-        Integer count = tagRepositoryQuery.amountOfArticlesByTagId(tagDto.getId());
+        Integer count = tagQueryRepository.amountOfArticlesByTagId(tagDto.getId());
         String name = tagRepository.findById(tagDto.getId()).get().getName();
         tags.put(name, count);
         return tags;

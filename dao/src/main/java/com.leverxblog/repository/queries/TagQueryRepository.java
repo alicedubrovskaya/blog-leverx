@@ -1,10 +1,10 @@
-package com.leverxblog.repository;
+package com.leverxblog.repository.queries;
 
 import com.leverxblog.entity.ArticleEntity;
 
 import java.util.List;
 
-public interface TagRepositoryQuery {
+public interface TagQueryRepository {
 
     int amountOfArticlesByTagId(Long id);
 

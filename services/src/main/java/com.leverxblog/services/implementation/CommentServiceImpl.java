@@ -4,10 +4,14 @@ import com.leverxblog.converters.CommentConverter;
 import com.leverxblog.dto.CommentDto;
 import com.leverxblog.entity.CommentEntity;
 import com.leverxblog.exception.CommentNotFoundException;
+import com.leverxblog.filtration.Page;
+import com.leverxblog.filtration.impl.CommentSortProvider;
 import com.leverxblog.repository.CommentRepository;
+import com.leverxblog.repository.queries.CommentQueryRepository;
 import com.leverxblog.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -17,11 +21,13 @@ import java.util.stream.Collectors;
 @Service
 public class CommentServiceImpl implements CommentService<CommentDto> {
     private CommentRepository commentRepository;
+    private CommentQueryRepository commentQueryRepository;
     private CommentConverter commentConverter;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, CommentConverter commentConverter) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentQueryRepository commentQueryRepository, CommentConverter commentConverter) {
         this.commentRepository = commentRepository;
+        this.commentQueryRepository = commentQueryRepository;
         this.commentConverter = commentConverter;
     }
 
@@ -61,5 +67,15 @@ public class CommentServiceImpl implements CommentService<CommentDto> {
     public CommentDto getByArticleAndCommentId(UUID articleId, UUID commentId) {
         CommentEntity commentEntity = commentRepository.findByIdAndArticleEntityId(commentId, articleId);
         return commentConverter.convert(commentEntity);
+    }
+
+    @Transactional
+    @Override
+    public List<CommentDto> findAll(Integer skip, Integer limit, String sort, String order) {
+        return commentQueryRepository
+                .findAll(new Page(skip, limit), new CommentSortProvider(sort, order))
+                .stream()
+                .map(articleEntity ->  commentConverter.convert(articleEntity))
+                .collect(Collectors.toList());
     }
 }

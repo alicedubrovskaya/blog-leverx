@@ -1,5 +1,7 @@
 package com.leverxblog.services;
 
+import com.leverxblog.dto.ArticleDto;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -15,4 +17,6 @@ public interface ArticleService<T> {
     List <T> getByUserId(UUID userId);
 
     List <T> getByPublicStatus();
+
+    List<T> findAll(Integer skip, Integer limit, String sort, String order);
 }
