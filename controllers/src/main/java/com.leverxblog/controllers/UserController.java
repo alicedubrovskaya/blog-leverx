@@ -2,8 +2,11 @@ package com.leverxblog.controllers;
 
 import com.leverxblog.dto.ArticleDto;
 import com.leverxblog.dto.UserDto;
+import com.leverxblog.services.ArticleService;
+import com.leverxblog.services.UserService;
 import com.leverxblog.services.implementation.ArticleServiceImpl;
 import com.leverxblog.services.implementation.UserServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,20 +18,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
-    private final UserServiceImpl userServiceImpl;
-    private final ArticleServiceImpl articleServiceImpl;
-
-    @Autowired
-    public UserController(UserServiceImpl userServiceImpl, ArticleServiceImpl articleServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-        this.articleServiceImpl = articleServiceImpl;
-    }
+    private final UserService userService;
+    private final ArticleService articleService;
 
     @GetMapping(path = "/get")
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<UserDto> users = userServiceImpl.getAll();
+        List<UserDto> users = userService.getAll();
         if (CollectionUtils.isEmpty(users)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -37,9 +35,9 @@ public class UserController {
 
     @GetMapping(path = "/me")
     public ResponseEntity<List<ArticleDto>> getMyArticles(Authentication authentication) {
-        UserDto user = userServiceImpl.getByLogin(authentication.getName());
+        UserDto user = userService.getByLogin(authentication.getName());
 
-        List<ArticleDto> articles = articleServiceImpl.getByUserId(user.getId());
+        List<ArticleDto> articles = articleService.getByUserId(user.getId());
         if (CollectionUtils.isEmpty(articles)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

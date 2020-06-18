@@ -5,25 +5,26 @@ import com.leverxblog.dto.CommentDto;
 import com.leverxblog.entity.CommentEntity;
 import com.leverxblog.filtration.Page;
 import com.leverxblog.filtration.impl.ArticleSortProvider;
+import javassist.NotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public interface CommentService<T> {
-    String add(T t);
+public interface CommentService {
+    String add(CommentDto commentDto);
 
-    T getById(UUID id) throws Exception;
+    CommentDto getById(UUID id) throws NotFoundException;
 
-    List<T> getAll();
+    List<CommentDto> getAll();
 
     void delete(UUID id);
 
-    List<T> getByArticleId(UUID articleId);
+    List<CommentDto> getByArticleId(UUID articleId);
 
-    T getByArticleAndCommentId(UUID articleId, UUID commentId);
+    CommentDto getByArticleAndCommentId(UUID articleId, UUID commentId);
 
-    List<T> findAll(Integer skip, Integer limit, String sort, String order);
+    List<CommentDto> findAll(Integer skip, Integer limit, String sort, String order);
 
 }

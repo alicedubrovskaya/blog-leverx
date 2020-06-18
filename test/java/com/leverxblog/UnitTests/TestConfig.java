@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestConfig {
 
-    @Bean
+   /* @Bean
     public TagConverter tagConverter() {
         return new TagConverter();
     }
@@ -19,5 +19,7 @@ public class TestConfig {
     UserConverter userConverter() {
         return new UserConverter();
     }
+
+    */
 
 }

@@ -4,17 +4,17 @@ import com.leverxblog.entity.UserEntity;
 import com.leverxblog.entity.security.VerificationTokenEntity;
 import com.leverxblog.repository.UserRepository;
 import com.leverxblog.repository.VerificationTokenRepository;
-import com.leverxblog.services.IUserService;
+import com.leverxblog.services.UserRegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserRegistrationServiceImpl implements IUserService {
+public class UserRegistrationRegistrationServiceImpl implements UserRegistrationService {
     private UserRepository userRepository;
     private VerificationTokenRepository verificationTokenRepository;
 
     @Autowired
-    public UserRegistrationServiceImpl(UserRepository userRepository, VerificationTokenRepository verificationTokenRepository) {
+    public UserRegistrationRegistrationServiceImpl(UserRepository userRepository, VerificationTokenRepository verificationTokenRepository) {
         this.userRepository = userRepository;
         this.verificationTokenRepository = verificationTokenRepository;
     }

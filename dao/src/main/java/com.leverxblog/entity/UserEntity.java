@@ -52,7 +52,6 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<ArticleEntity> articles = new ArrayList<>();
 

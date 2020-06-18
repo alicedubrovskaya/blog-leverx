@@ -5,9 +5,12 @@ import com.leverxblog.dto.StatusDto;
 import com.leverxblog.dto.TagDto;
 import com.leverxblog.dto.UserDto;
 
+import com.leverxblog.services.ArticleService;
+import com.leverxblog.services.UserService;
 import com.leverxblog.services.implementation.ArticleServiceImpl;
 import com.leverxblog.services.implementation.UserServiceImpl;
 import javassist.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -18,30 +21,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/articles")
 public class ArticleController {
 
-    private final ArticleServiceImpl articleServiceImpl;
-    private final UserServiceImpl userServiceImpl;
-
-    @Autowired
-    public ArticleController(ArticleServiceImpl articleServiceImpl, UserServiceImpl userServiceImpl) {
-        this.articleServiceImpl = articleServiceImpl;
-        this.userServiceImpl = userServiceImpl;
-    }
+    private final ArticleService articleService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<Map<String, String>> addNewArticle(@RequestBody ArticleDto articleDto,
                                                              Authentication authentication) {
         String login = authentication.getName();
-        UUID userId = userServiceImpl.getByLogin(login).getId();
-        Map id = Collections.singletonMap("id", articleServiceImpl.add(articleDto, userId));
+        UUID userId = userService.getByLogin(login).getId();
+        userService.getByLogin(login);
+        Map id = Collections.singletonMap("id", articleService.add(articleDto, userId));
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<ArticleDto>> getAll() {
-        List<ArticleDto> articles = articleServiceImpl.getAll();
+        List<ArticleDto> articles = articleService.getAll();
         if (CollectionUtils.isEmpty(articles)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -50,7 +49,7 @@ public class ArticleController {
 
     @GetMapping(path = "/public")
     public ResponseEntity<List<ArticleDto>> getPublicArticles() {
-        List<ArticleDto> articles = articleServiceImpl.getByPublicStatus();
+        List<ArticleDto> articles = articleService.getByPublicStatus();
         if (CollectionUtils.isEmpty(articles)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -64,7 +63,7 @@ public class ArticleController {
             @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "order", required = false) String order
     ) {
-        List<ArticleDto> articles = articleServiceImpl.findAll(skip, limit, sort, order);
+        List<ArticleDto> articles = articleService.findAll(skip, limit, sort, order);
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
@@ -72,8 +71,8 @@ public class ArticleController {
     public ResponseEntity<Void> delete(@PathVariable("id") UUID id,
                                        Authentication authentication)
             throws NotFoundException {
-        ArticleDto articleDto = articleServiceImpl.getById(id);
-        UserDto user = userServiceImpl.getByLogin(authentication.getName());
+        ArticleDto articleDto = articleService.getById(id);
+        UserDto user = userService.getByLogin(authentication.getName());
 
         if (articleDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -83,7 +82,7 @@ public class ArticleController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        articleServiceImpl.delete(id);
+        articleService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -91,8 +90,8 @@ public class ArticleController {
     public ResponseEntity<String> update(@PathVariable UUID userId, @RequestBody ArticleDto articleDto,
                                          Authentication authentication) throws NotFoundException {
 
-        ArticleDto articleFromDatabase = articleServiceImpl.getById(articleDto.getId());
-        UserDto user = userServiceImpl.getByLogin(authentication.getName());
+        ArticleDto articleFromDatabase = articleService.getById(articleDto.getId());
+        UserDto user = userService.getByLogin(authentication.getName());
 
         if (articleFromDatabase == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -132,7 +131,7 @@ public class ArticleController {
                 .tags(tagDtos)
                 .build();
 
-        String id = articleServiceImpl.add(articleDto2, userId);
+        String id = articleService.add(articleDto2, userId);
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }

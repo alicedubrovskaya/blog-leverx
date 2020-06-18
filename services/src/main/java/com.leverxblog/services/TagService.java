@@ -6,12 +6,12 @@ import com.leverxblog.dto.TagDto;
 import java.util.List;
 import java.util.Map;
 
-public interface TagService<T> {
-    String add(T t);
+public interface TagService {
+    String add(TagDto tagDto);
 
-    List<T> findAll();
+    List<TagDto> findAll();
 
     List<ArticleDto> getArticlesByTags(List<String> tagNames);
 
-    Map<String, Integer> amountOfArticlesByTag(T t);
+    Map<String, Integer> amountOfArticlesByTag(TagDto tagDto);
 }

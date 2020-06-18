@@ -1,24 +1,26 @@
 package com.leverxblog.services;
 
 import com.leverxblog.dto.ArticleDto;
+import com.leverxblog.entity.UserEntity;
+import javassist.NotFoundException;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface ArticleService<T> {
-    String add(T t, UUID userId);
+public interface ArticleService {
+    String add(ArticleDto articleDto, UUID userId);
 
-    List<T> getAll();
+    List<ArticleDto> getAll();
 
-    T getById(UUID id) throws Exception;
+    ArticleDto getById(UUID id) throws NotFoundException;
 
     void delete(UUID id);
 
-    List<T> getByUserId(UUID userId);
+    List<ArticleDto> getByUserId(UUID userId);
 
-    List<T> getByPublicStatus();
+    List<ArticleDto> getByPublicStatus();
 
-    List<T> findAll(Integer skip, Integer limit, String sort, String order);
+    List<ArticleDto> findAll(Integer skip, Integer limit, String sort, String order);
 
-    T getByTitle(String title);
+    ArticleDto getByTitle(String title);
 }

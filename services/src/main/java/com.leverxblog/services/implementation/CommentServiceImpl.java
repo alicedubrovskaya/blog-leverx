@@ -20,7 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class CommentServiceImpl implements CommentService<CommentDto> {
+public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     private CommentQueryRepository commentQueryRepository;
     private CommentConverter commentConverter;

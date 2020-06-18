@@ -3,8 +3,8 @@ package com.leverxblog.controllers;
 import com.leverxblog.authentification.jwt.JwtTokenProvider;
 import com.leverxblog.dto.UserAuthDto;
 import com.leverxblog.dto.UserDto;
-import com.leverxblog.services.implementation.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.leverxblog.services.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,27 +21,21 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/authenticate")
+@AllArgsConstructor
 public class AuthenticationController {
 
     private static final String INCORRECT_LOGIN_OR_PASSWORD = "Incorrect login or password";
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserServiceImpl userServiceImpl;
-
-    @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserServiceImpl userServiceImpl) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userServiceImpl = userServiceImpl;
-    }
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity authenticate(@RequestBody UserAuthDto userAuthDto) {
         try {
             String login = userAuthDto.getLogin();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, userAuthDto.getPassword()));
-            UserDto userDto = userServiceImpl.getByLogin(login);
+            UserDto userDto = userService.getByLogin(login);
 
             if (userDto == null) {
                 throw new UsernameNotFoundException("User with login: " + login + " not found");

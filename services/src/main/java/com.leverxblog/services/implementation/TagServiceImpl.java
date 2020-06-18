@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class TagServiceImpl implements TagService<TagDto> {
+public class TagServiceImpl implements TagService {
     private TagRepository tagRepository;
     private TagConverter tagConverter;
     private TagQueryRepository tagQueryRepository;

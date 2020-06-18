@@ -2,7 +2,9 @@ package com.leverxblog.controllers;
 
 import com.leverxblog.dto.ArticleDto;
 import com.leverxblog.dto.TagDto;
+import com.leverxblog.services.TagService;
 import com.leverxblog.services.implementation.TagServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,33 +18,34 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/articles")
+@AllArgsConstructor
 public class TagController {
 
-    private final TagServiceImpl tagServiceImpl;
+    private final TagService tagService;
 
     @Autowired
-    public TagController(TagServiceImpl tagServiceImpl) {
-        this.tagServiceImpl = tagServiceImpl;
+    public TagController(TagServiceImpl tagService) {
+        this.tagService = tagService;
     }
 
     @PostMapping("/addTag")
     public ResponseEntity<Map<String,String>> addNewTag(@RequestBody TagDto tagDto) {
-        Map id = Collections.singletonMap("id", tagServiceImpl.add(tagDto));
+        Map id = Collections.singletonMap("id", tagService.add(tagDto));
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
     @GetMapping("/cloud")
     public ResponseEntity<List<Map<String, Integer>>> getCloudOfTags() {
-        List<TagDto> tags = tagServiceImpl.findAll();
+        List<TagDto> tags = tagService.findAll();
         List<Map<String, Integer>> tagsCloud = tags.stream()
-                .map(tagDto -> tagServiceImpl.amountOfArticlesByTag(tagDto))
+                .map(tagDto -> tagService.amountOfArticlesByTag(tagDto))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(tagsCloud, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<ArticleDto>> getArticlesByTags(@RequestParam List<String> tags) {
-        List<ArticleDto> articles = tagServiceImpl.getArticlesByTags(tags);
+        List<ArticleDto> articles = tagService.getArticlesByTags(tags);
         if (CollectionUtils.isEmpty(articles)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -7,20 +7,22 @@ import com.leverxblog.entity.security.PasswordResetToken;
 
 import java.util.List;
 
-public interface CrudService<T> {
-    String add(T t);
+public interface UserService {
+    String add(UserDto userDto);
 
-    List<T> getAll();
+    List<UserDto> getAll();
 
-    UserEntity addToRegister(T t);
+    UserEntity addToRegister(UserDto userEntity);
 
     String register(UserRegisterDto userRegisterDto);
 
-    T getByLogin(String login);
+    UserDto getByLogin(String login);
 
-    T getByEmail(String email);
+    UserDto getByEmail(String email);
 
     void createPasswordResetToken(UserEntity userEntity, String token);
 
     PasswordResetToken getPasswordResetToken(String token);
+
+    UserEntity getUserEntity(UserDto userDto);
 }

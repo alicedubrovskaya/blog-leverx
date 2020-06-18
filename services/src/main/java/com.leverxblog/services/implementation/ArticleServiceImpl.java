@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ArticleServiceImpl implements ArticleService<ArticleDto> {
+public class ArticleServiceImpl implements ArticleService {
     private ArticleConverter articleConverter;
     private TagConverter tagConverter;
     private ArticleRepository articleRepository;

@@ -4,11 +4,10 @@ import com.leverxblog.converters.UserConverter;
 import com.leverxblog.dto.UserRegisterDto;
 import com.leverxblog.entity.UserEntity;
 import com.leverxblog.entity.security.PasswordResetToken;
-import com.leverxblog.entity.security.VerificationTokenEntity;
 import com.leverxblog.repository.PasswordResetTokenRepository;
 import com.leverxblog.repository.UserRepository;
 import com.leverxblog.dto.UserDto;
-import com.leverxblog.services.CrudService;
+import com.leverxblog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements CrudService<UserDto> {
+public class UserServiceImpl implements UserService {
     private UserConverter userConverter;
     private UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -57,6 +56,7 @@ public class UserServiceImpl implements CrudService<UserDto> {
         return userConverter.convert(userEntity);
     }
 
+    @Override
     public UserEntity getUserEntity(UserDto userDto) {
         return userConverter.convert(userDto);
     }

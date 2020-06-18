@@ -3,7 +3,7 @@ package com.leverxblog.services;
 import com.leverxblog.entity.UserEntity;
 import com.leverxblog.entity.security.VerificationTokenEntity;
 
-public interface IUserService {
+public interface UserRegistrationService {
     void createVerificationToken(UserEntity userEntity, String token);
 
     VerificationTokenEntity getVerificationToken(String verificationToken);
