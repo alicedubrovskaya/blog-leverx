@@ -1,4 +1,4 @@
-package com.leverxblog;
+package com.leverxblog.IntegrationTests;
 
 import com.leverxblog.controllers.controllers.ArticleController;
 import org.junit.Test;
@@ -18,10 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class IntegrationTests {
-
-    @Autowired
-    private ArticleController articleController;
+public class AccessDeniedTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,12 +28,5 @@ public class IntegrationTests {
         this.mockMvc.perform(get("/articles/all"))
                 .andDo(print())
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @WithMockUser(username = "alisa", password = "123", roles = "USER")
-    public void getArticles() throws Exception {
-        this.mockMvc.perform(delete("articles/delete","a75a771a-aaa6-4d07-a124-95db421c3aa5"))
-                .andExpect(status().isOk());
     }
 }

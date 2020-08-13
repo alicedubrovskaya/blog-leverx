@@ -1,5 +1,6 @@
 package com.leverxblog.UnitTests;
 
+import com.leverxblog.UnitTests.TestConfig.TestConfig;
 import com.leverxblog.services.converters.TagConverter;
 import com.leverxblog.services.dto.TagDto;
 import com.leverxblog.dao.entity.TagEntity;

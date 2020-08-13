@@ -1,5 +1,6 @@
 package com.leverxblog.UnitTests;
 
+import com.leverxblog.UnitTests.TestConfig.TestConfig;
 import com.leverxblog.services.converters.UserConverter;
 import com.leverxblog.services.dto.UserDto;
 import com.leverxblog.dao.entity.Role;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 public class UserConverterTest {
+
     @Autowired
     private UserConverter userConverter;
 
@@ -36,7 +38,6 @@ public class UserConverterTest {
                 .lastName("Dubrovskaya")
                 .password("123")
                 .email("lvrx@gmail.com")
-                .createdAt(date)
                 .login("test")
                 .role(Role.USER)
                 .verificationTokenEntity(null)
@@ -49,7 +50,6 @@ public class UserConverterTest {
                 .lastName("Dubrovskaya")
                 .password("123")
                 .email("lvrx@gmail.com")
-                .createdAt(date)
                 .login("test")
                 .role(Role.USER)
                 .verificationTokenEntity(null)
@@ -66,7 +66,7 @@ public class UserConverterTest {
     @Test
     public void fromDto() {
         UserEntity userEntityActual = userConverter.convert(userDto);
-        Assert.assertEquals(userEntityActual, userEntityExpected);
+        Assert.assertEquals(userEntityExpected,userEntityActual);
     }
 
 }

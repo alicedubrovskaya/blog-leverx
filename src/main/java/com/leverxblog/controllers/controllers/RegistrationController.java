@@ -17,9 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -40,7 +42,8 @@ public class RegistrationController {
 
 
     @PostMapping
-    public ResponseEntity<Void> registerUser(@RequestBody UserRegisterDto userRegisterDto, WebRequest request) {
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDto userRegisterDto, WebRequest request) {
+
         userRegisterDto.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
 
         UserEntity userEntity = userService.addToRegister(userRegisterDto);
