@@ -1,7 +1,8 @@
 package com.leverxblog.services.services.implementation;
 
+import com.leverxblog.controllers.exception.InsufficientDataException;
+import com.leverxblog.controllers.exception.UserAlreadyExistsException;
 import com.leverxblog.services.converters.UserConverter;
-import com.leverxblog.services.dto.UserRegisterDto;
 import com.leverxblog.dao.entity.UserEntity;
 import com.leverxblog.dao.entity.security.PasswordResetToken;
 import com.leverxblog.dao.repository.PasswordResetTokenRepository;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,22 +63,28 @@ public class UserServiceImpl implements UserService {
         return userConverter.convert(userDto);
     }
 
-    @Override
-    public String register(UserRegisterDto userRegisterDto) {
-        if (userRepository.existsByLogin(userRegisterDto.getLogin())) {
-            return null;
-        }
-        userRegisterDto.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
-        userRegisterDto.isRegistration();
-        String id = add(userRegisterDto);
-        return id;
-    }
 
     @Override
-    public UserEntity addToRegister(UserDto userDto) {
+    public UserEntity register(UserDto userDto) throws InsufficientDataException, UserAlreadyExistsException {
+        if (userDto.getLogin() == null || userDto.getPassword() == null || userDto.getEmail()==null) {
+            throw new InsufficientDataException();
+        }
+        if (userRepository.existsByLogin(userDto.getLogin())) {
+            throw new UserAlreadyExistsException(userDto.getLogin());
+        }
+
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         UserEntity userEntity = userConverter.convert(userDto);
         userRepository.save(userEntity);
         return userEntity;
+    }
+
+    @Override
+    public Void confirmRegistration(UserEntity userEntity) {
+        userEntity.isEnabled();
+        userEntity.setCreatedAt(new Date(System.currentTimeMillis()));
+        userRepository.save(userEntity);
+        return null;
     }
 
     @Override

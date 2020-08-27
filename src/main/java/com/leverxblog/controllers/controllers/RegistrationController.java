@@ -1,5 +1,7 @@
 package com.leverxblog.controllers.controllers;
 
+import com.leverxblog.controllers.exception.InsufficientDataException;
+import com.leverxblog.controllers.exception.UserAlreadyExistsException;
 import com.leverxblog.services.dto.UserDto;
 import com.leverxblog.services.dto.UserRegisterDto;
 import com.leverxblog.dao.entity.UserEntity;
@@ -42,17 +44,29 @@ public class RegistrationController {
 
 
     @PostMapping
-    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDto userRegisterDto, WebRequest request) {
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserDto userDto,
+                                             WebRequest request) {
 
-        userRegisterDto.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
+        try {
+            UserEntity userEntity = userService.register(userDto);
 
-        UserEntity userEntity = userService.addToRegister(userRegisterDto);
-        if (userEntity == null) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            if (userEntity == null) {
+                return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            } else {
+                String appUrl = request.getContextPath();
+                eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userEntity, appUrl, request.getLocale()));
+            }
+        } catch (UserAlreadyExistsException ex) {
+
+            System.out.print(ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        } catch (InsufficientDataException ex) {
+
+            System.out.print(ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        String appUrl = request.getContextPath();
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userEntity, appUrl, request.getLocale()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -71,9 +85,7 @@ public class RegistrationController {
             return new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
         }
 
-        userEntity.setEnabled(true);
-        userEntity.setCreatedAt(new Date(System.currentTimeMillis()));
-        userRegistrationService.saveRegisteredUser(userEntity);
+        userService.confirmRegistration(userEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
